@@ -1,0 +1,27 @@
+{
+  "name": "onessg",
+  "version": "0.1.0",
+  "description": "The Static Site Generator that does only one thing: compile your html.",
+  "main": "index.js",
+  "bin": {
+    "onessg": "./cli.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["Static Site Generator", "consolidate.js", "template engine", "simple", "layouts"],
+  "author": "Ryan Zimmerman <opensrc@ryanzim.com> (http://ryanzim.com)",
+  "license": "MIT",
+  "repository": "RyanZim/onessg",
+  "homepage": "https://github.com/RyanZim/onessg/",
+  "bugs": "https://github.com/RyanZim/onessg/issues",
+  "dependencies": {
+    "consolidate": "^0.14.1",
+    "front-matter": "^2.1.0",
+    "glob": "^7.0.5",
+    "yargs": "^4.8.1"
+  },
+  "devDependencies": {
+    "ejs": "^2.5.1"
+  }
+}
