@@ -1,4 +1,4 @@
-var fs = require('fs');
+var fs = require('fs-extra');
 var path = require('path');
 var fm = require('front-matter');
 var cons = require('consolidate');
@@ -15,7 +15,7 @@ module.exports = function (engine, src, dist, layouts) {
   if (typeof cons[engine] !== 'function') throw new Error(engine+' is not a valid consolidate.js template engine');
   // MAIN CODE
   // For each file in src:
-  forGlob(path.join(src, '**.html'), function (filePath) {
+  forGlob(path.join(src, '**/*.html'), function (filePath) {
     // Load and parse FM:
     loadFile(filePath, function (err, data) {
       if (err) throw err;
@@ -24,8 +24,8 @@ module.exports = function (engine, src, dist, layouts) {
         if (err) throw err;
         // Get path to write to:
         var writePath=path.join(dist, filePath.replace(src, ''));
-        // Write output:
-        fs.writeFile(writePath, html, function (err) {
+        // Output using fs-extra:
+        fs.outputFile(writePath, html, function (err) {
           if (err) throw err;
         });
       });
