@@ -3,6 +3,8 @@ var path = require('path');
 var fm = require('front-matter');
 var cons = require('consolidate');
 var glob = require('glob');
+var yaml = require('js-yaml');
+var _ = require('lodash');
 module.exports = function (engine, src, dist, layouts) {
   // SANITY CHECKS
   // Check that src exists:
@@ -20,7 +22,7 @@ module.exports = function (engine, src, dist, layouts) {
     loadFile(filePath, function (err, data) {
       if (err) throw err;
       // Render it:
-      render(data, function (err, html) {
+      render(data, filePath, function (err, html) {
         if (err) throw err;
         // Get path to write to:
         var writePath=path.join(dist, filePath.replace(src, ''));
@@ -34,23 +36,64 @@ module.exports = function (engine, src, dist, layouts) {
     // Empty for now, since forGlob() is sync
   });
   // Declare render() inside the main function for access to var engine
-  function render(data, cb) {
-    // If layout, render:
-    if (data.attributes._layout) {
-      // Get layouts/layoutName.* :
-      var layout=glob.sync(path.join(layouts, data.attributes._layout)+'.*')[0];
-      // Glob doesn't throw an error if the layout path doesn't exist, so we do:
-      if (!layout) {
-        cb(new Error('The file: '+path.join(layouts, data.attributes._layout)+'.'+engine+' does not exist'))
+  function render(data, filePath, cb) {
+    // Get defaults:
+    getDefaults(filePath, function (err, defaults) {
+      if (err) return cb(err);
+      // Set Defaults:
+      _.defaultsDeep(data.attributes, defaults);
+      // If layout, render:
+      if (data.attributes._layout) {
+        // Get layouts/layoutName.* :
+        var layout=glob.sync(path.join(layouts, data.attributes._layout)+'.*')[0];
+        // Glob doesn't throw an error if the layout path doesn't exist, so we do:
+        if (!layout) {
+          cb(new Error('The file: '+path.join(layouts, data.attributes._layout)+'.'+engine+' does not exist'))
+        }
+        var locals=data.attributes;
+        locals._body=data.body;
+        // Render with consolidate.js:
+        cons[engine](layout, locals, cb);
+      } else {
+        // Else, return body
+        cb(null, data.body)
       }
-      // Construct locals object:
-      var locals=data.attributes;
-      locals._body=data.body;
-      // Render with consolidate.js:
-      cons[engine](layout, locals, cb);
-    } else {
-      // Else, return body
-      cb(null, data.body)
+    });
+  }
+  // Declate getDefaults inside the main function for access to var src
+  function getDefaults(filePath, cb, defaults) {
+    glob(path.join(path.dirname(filePath), '_defaults.*'), function (err, res) {
+      if (!defaults) {
+        defaults={};
+      }
+      if (err) return cb(err);
+      if (!res[0]) {
+        return recurse();
+      }
+      var ext=path.extname(res[0]);
+      if (ext === '.yaml' || ext === '.yml') {
+        try {
+          _.defaultsDeep(defaults, yaml.safeLoad(fs.readFileSync(res[0], 'utf8')));
+        } catch (e) {
+          return cb(e);
+        }
+      } else if (ext === '.json') {
+        try {
+          // Use fs-extra:
+          _.defaultsDeep(defaults, fs.readJsonSync(res[0]));
+        } catch (e) {
+          return cb(e);
+        }
+      }
+      recurse();
+    });
+    function recurse() {
+      if (path.dirname(filePath) === src.replace(path.sep, '')) {
+        return cb(null, defaults);
+      } else {
+        var newPath=path.dirname(filePath);
+        return getDefaults(newPath, cb, defaults);
+      }
     }
   }
 };
