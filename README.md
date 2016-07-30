@@ -26,6 +26,7 @@ onessg assumes the following directory structure by default:
 ```
 .
 ├── src/
+|   ├── _defaults.yaml
 |   └── page-one.html
 ├── layouts/
 |   └── page.ejs
@@ -45,6 +46,15 @@ _layout: "page"
 
 Notice the underscore before `layout`. _Anything prefixed with an underscore is reserved word for onessg._ All keys in the front-matter will be passed as a local to your templates.
 
+You can set defaults for your front-matter in `_defaults.yaml` (`_defaults.json` works too!). You can override them in your front-matter. `_defaults.yaml` is also the place to set options for your template engine.
+
+**src/_defaults.yaml**:
+```
+title: "Hello World!" # This title will be used if none is specified
+author: "John Smith"
+rmWhitespace: true # Here we are setting an option for ejs
+```
+
 **layouts/page.ejs** looks like this:
 ```
 <!DOCTYPE html>
@@ -52,6 +62,7 @@ Notice the underscore before `layout`. _Anything prefixed with an underscore is 
     <head>
         <meta charset="utf-8">
         <title><%= title %></title>
+        <meta name="author" content="<%= author %>">
     </head>
     <body>
         <%- _body -%>
@@ -70,6 +81,7 @@ onessg will compile all html files in src/ (and subdirectories), and output them
 ```
 .
 ├── src/
+|   ├── _defaults.yaml
 |   └── page-one.html
 ├── layouts/
 |   └── page.ejs
@@ -77,17 +89,18 @@ onessg will compile all html files in src/ (and subdirectories), and output them
 |   └── page-one.html
 └── package.json
 ```
-**dist/page-one.html** looks like this:
+**dist/page-one.html** looks like this (leading whitespace is removed by ejs due to the `rmWhitespace` option that we set in `_defaults.yaml`):
 ```
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <title>My first Page</title>
-    </head>
-    <body>
-        <!-- Your HTML -->
-    </body>
+<head>
+<meta charset="utf-8">
+<title>My first Page</title>
+<meta name="author" content="John Smith">
+</head>
+<body>
+<!-- Your HTML -->
+</body>
 </html>
 ```
 **Success!!!**
