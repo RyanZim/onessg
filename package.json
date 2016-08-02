@@ -7,7 +7,7 @@
     "onessg": "./cli.js"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha --ui tdd"
   },
   "keywords": [
     "Static Site Generator",
@@ -31,6 +31,7 @@
     "yargs": "^4.8.1"
   },
   "devDependencies": {
-    "ejs": "^2.5.1"
+    "ejs": "^2.5.1",
+    "mocha": "^2.5.3"
   }
 }
