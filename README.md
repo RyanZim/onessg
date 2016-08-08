@@ -1,8 +1,8 @@
 # onessg
 
-[![Travis](https://img.shields.io/travis/RyanZim/onessg.svg?maxAge=2592000)]()
-[![npm](https://img.shields.io/npm/v/onessg.svg?maxAge=2592000)]()
-[![npm](https://img.shields.io/npm/l/onessg.svg?maxAge=2592000)]()
+[![Travis](https://img.shields.io/travis/RyanZim/onessg.svg?maxAge=2592000)](https://travis-ci.org/RyanZim/onessg)
+[![npm](https://img.shields.io/npm/v/onessg.svg?maxAge=2592000)](https://www.npmjs.com/package/onessg)
+[![npm](https://img.shields.io/npm/l/onessg.svg?maxAge=2592000)](https://github.com/RyanZim/onessg/blob/master/LICENSE)
 
 onessg (One Static Site Generator) is the Static Site Generator that does only one thing: compile your html. It won't minify your JS, concat your CSS, or optimize your images. Why? You most likely already have a favorite tool for doing that.
 
@@ -42,7 +42,7 @@ onessg looks in the folders `src/` & `layouts/` and writes to `dist/` by default
 All HTML files can include front-matter (yaml or json).
 
 **src/page-one.html**:
-```
+```html
 ---
 title: "My first Page"
 _layout: "page"
@@ -54,14 +54,14 @@ Notice the underscore before `layout`. _Anything prefixed with an underscore is 
 You can set defaults for your front-matter in `_defaults.yaml` (`_defaults.json` works too!). These defaults can be overridden in your front-matter. `_defaults.yaml` is also the place to set options for your template engine.
 
 **src/_defaults.yaml**:
-```
+```yaml
 title: "Hello World!" # This title will be used if none is specified
 author: "John Smith"
 rmWhitespace: true # Here we are setting an option for ejs
 ```
 
 **layouts/page.ejs** looks like this:
-```
+```html
 <!DOCTYPE html>
 <html>
     <head>
@@ -95,7 +95,7 @@ onessg will compile all html files in `src/` (and subdirectories), and output th
 └── package.json
 ```
 **dist/page-one.html** looks like this (leading whitespace is removed by ejs due to the `rmWhitespace` option that we set in `_defaults.yaml`):
-```
+```html
 <!DOCTYPE html>
 <html>
 <head>
@@ -128,7 +128,7 @@ Now we are going to add a subdirectory to `src/`. Inside the subdirectory, we wi
 Here is the contents of the files:
 
 **src/subdirectory/_defaults.yaml**:
-```
+```yaml
 _layout: page
 author: Jane Smith
 ```
@@ -140,13 +140,13 @@ Let's discuss each line:
 - `author: Jane Smith` Here we are overriding a default set in `src/_defaults.yaml`.
 
 **src/subdirectory/subpage.html**:
-```
+```html
 <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
 ```
 Note that we have omitted the front-matter. The defaults from the `_defaults` file in this directory and parent directories (up to `src/`) will apply.
 
 We will run onessg again:
-```
+```bash
 onessg -e ejs
 ```
 
@@ -169,7 +169,7 @@ Our directory structure is now:
 ```
 
 **dist/subdirectory/subpage.html**:
-```
+```html
 <!DOCTYPE html>
 <html>
 <head>
@@ -213,4 +213,4 @@ Check the [Roadmap](https://github.com/RyanZim/onessg/wiki/Roadmap) to see what'
 
 ## License
 
-MIT
+[MIT](https://github.com/RyanZim/onessg/blob/master/LICENSE)
