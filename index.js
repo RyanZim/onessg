@@ -1,9 +1,11 @@
 var fs = require('fs-extra');
 var path = require('path');
+var replaceExt=require('replace-ext');
 var fm = require('front-matter');
 var cons = require('consolidate');
 var glob = require('glob');
 var yaml = require('js-yaml');
+var marked = require('marked');
 var _ = require('lodash');
 module.exports = function (engine, src, dist, layouts) {
   // SANITY CHECKS
@@ -16,7 +18,7 @@ module.exports = function (engine, src, dist, layouts) {
   // Check that engine is supported by consolidate.js:
   if (typeof cons[engine] !== 'function') throw new Error(engine+' is not a valid consolidate.js template engine');
   // MAIN CODE
-  // For each file in src:
+  // For each html file in src:
   forGlob(path.join(src, '**/*.html'), function (filePath) {
     // Load and parse FM:
     loadFile(filePath, function (err, data) {
@@ -35,6 +37,31 @@ module.exports = function (engine, src, dist, layouts) {
   }, function () {
     // Empty for now, since forGlob() is sync
   });
+  // For each markdown file in src:
+  forGlob(path.join(src, '**/*.@(md|markdown)'), function (filePath) {
+    // Load and parse FM:
+    loadFile(filePath, function (err, data) {
+      if (err) throw err;
+      marked(data.body, function (err, body) {
+        if (err) throw err;
+        // Overwrite markdown with html:
+        data.body=body;
+        // Render it:
+        render(data, filePath, function (err, html) {
+          if (err) throw err;
+          // Get path to write to:
+          var writePath=replaceExt(path.join(dist, filePath.replace(src, '')), '.html');
+          // Output using fs-extra:
+          fs.outputFile(writePath, html, function (err) {
+            if (err) throw err;
+          });
+        });
+      });
+    });
+  }, function () {
+    // Empty for now, since forGlob() is sync
+  });
+  // IN-SCOPE HELPER FUNCTIONS
   // Declare render() inside the main function for access to var engine
   function render(data, filePath, cb) {
     // Get defaults:
@@ -60,7 +87,7 @@ module.exports = function (engine, src, dist, layouts) {
       }
     });
   }
-  // Declate getDefaults inside the main function for access to var src
+  // Declare getDefaults inside the main function for access to var src
   function getDefaults(filePath, cb, defaults) {
     glob(path.join(path.dirname(filePath), '_defaults.*'), function (err, res) {
       if (!defaults) {

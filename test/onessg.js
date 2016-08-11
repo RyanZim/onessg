@@ -2,7 +2,9 @@ var execSync=require('child_process').execSync;
 var fs=require('fs-extra');
 var path=require('path');
 var assert=require('assert');
+var replaceExt=require('replace-ext');
 assert.file=function (fileName) {
+  fileName=replaceExt(fileName, '.html');
   var expected=fs.readFileSync(path.join('test/expected', fileName), 'utf8');
   var actual=fs.readFileSync(path.join('test/dist', fileName), 'utf8');
   assert.equal(actual, expected);
@@ -23,6 +25,20 @@ suite('plain html', function () {
   test('empty front-matter', function () {
     assert.file('empty-fm.html');
   });
+});
+suite('markdown', function () {
+  test('empty file', function () {
+    assert.file('empty-md.md');
+  });
+  test('text', function () {
+    assert.file('text-md.md');
+  });
+  test('advanced markdown', function () {
+    assert.file('markdown.md');
+  });
+  test('.markdown extention', function () {
+    assert.file('text-markdown.markdown');
+  })
 });
 suite('layouts & front-matter', function () {
   test('basic layout', function () {

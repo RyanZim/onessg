@@ -4,7 +4,7 @@
 [![npm](https://img.shields.io/npm/v/onessg.svg?maxAge=2592000)](https://www.npmjs.com/package/onessg)
 [![npm](https://img.shields.io/npm/l/onessg.svg?maxAge=2592000)](https://github.com/RyanZim/onessg/blob/master/LICENSE)
 
-onessg (One Static Site Generator) is the Static Site Generator that does only one thing: compile your html. It won't minify your JS, concat your CSS, or optimize your images. Why? You most likely already have a favorite tool for doing that.
+onessg (One Static Site Generator) is the Static Site Generator that does only one thing: compile your html and markdown. It won't minify your JS, concat your CSS, or optimize your images. Why? You most likely already have a favorite tool for doing that.
 
 > The Javascript pendulum has swung from restrictive, monolithic frameworks to modular, boilerplate-hindered libraries.
 >
@@ -31,7 +31,7 @@ For this tutorial we will use the following file/directory structure:
 .
 ├── src/
 |   ├── _defaults.yaml
-|   └── page-one.html
+|   └── page-one.md
 ├── layouts/
 |   └── page.ejs
 ├── dist/
@@ -39,15 +39,15 @@ For this tutorial we will use the following file/directory structure:
 ```
 onessg looks in the folders `src/` & `layouts/` and writes to `dist/` by default (you can change this if you wish).
 
-All HTML files can include front-matter (yaml or json).
+All files can include front-matter (yaml or json).
 
-**src/page-one.html**:
+**src/page-one.md**:
 ```html
 ---
 title: "My first Page"
 _layout: "page"
 ---
-<!-- Your HTML -->
+Hello World!
 ```
 Notice the underscore before `layout`. _Anything prefixed with an underscore is reserved word for onessg._ All keys in the front-matter will be passed as a local to your templates.
 
@@ -87,7 +87,7 @@ onessg will compile all html files in `src/` (and subdirectories), and output th
 .
 ├── src/
 |   ├── _defaults.yaml
-|   └── page-one.html
+|   └── page-one.md
 ├── layouts/
 |   └── page.ejs
 ├── dist/
@@ -104,7 +104,7 @@ onessg will compile all html files in `src/` (and subdirectories), and output th
 <meta name="author" content="John Smith">
 </head>
 <body>
-<!-- Your HTML -->
+<p>Hello World!</p>
 </body>
 </html>
 ```
@@ -118,7 +118,7 @@ Now we are going to add a subdirectory to `src/`. Inside the subdirectory, we wi
 |   |   ├── _defaults.yaml
 |   |   └── subpage.html
 |   ├── _defaults.yaml
-|   └── page-one.html
+|   └── page-one.md
 ├── layouts/
 |   └── page.ejs
 ├── dist/
@@ -158,7 +158,7 @@ Our directory structure is now:
 |   |   ├── _defaults.yaml
 |   |   └── subpage.html
 |   ├── _defaults.yaml
-|   └── page-one.html
+|   └── page-one.md
 ├── layouts/
 |   └── page.ejs
 ├── dist/
