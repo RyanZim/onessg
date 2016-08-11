@@ -75,7 +75,7 @@ module.exports = function (engine, src, dist, layouts) {
         var layout=glob.sync(path.join(layouts, data.attributes._layout)+'.*')[0];
         // Glob doesn't throw an error if the layout path doesn't exist, so we do:
         if (!layout) {
-          cb(new Error('The file: '+path.join(layouts, data.attributes._layout)+'.'+engine+' does not exist'))
+          cb(new Error('The file: '+path.join(layouts, data.attributes._layout)+'.'+engine+' does not exist'));
         }
         var locals=data.attributes;
         locals._body=data.body;
@@ -83,7 +83,7 @@ module.exports = function (engine, src, dist, layouts) {
         cons[engine](layout, locals, cb);
       } else {
         // Else, return body
-        cb(null, data.body)
+        cb(null, data.body);
       }
     });
   }

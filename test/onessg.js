@@ -38,7 +38,7 @@ suite('markdown', function () {
   });
   test('.markdown extention', function () {
     assert.file('text-markdown.markdown');
-  })
+  });
 });
 suite('layouts & front-matter', function () {
   test('basic layout', function () {
