@@ -7,7 +7,8 @@
     "onessg": "./cli.js"
   },
   "scripts": {
-    "test": "mocha --ui tdd",
+    "test": "npm run lint && npm run mocha",
+    "mocha": "mocha --ui tdd",
     "lint": "eslint '**/*.js'"
   },
   "keywords": [
@@ -35,7 +36,7 @@
   },
   "devDependencies": {
     "ejs": "^2.5.1",
-    "eslint": "^3.2.2",
+    "eslint": "~3.2.2",
     "mocha": "^2.5.3"
   }
 }
