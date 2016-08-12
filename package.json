@@ -1,7 +1,7 @@
 {
   "name": "onessg",
   "version": "0.2.0",
-  "description": "The Static Site Generator that does only one thing: compile your html.",
+  "description": "The Static Site Generator that does only one thing: compile your html and markdown.",
   "main": "index.js",
   "bin": {
     "onessg": "./cli.js"
@@ -16,7 +16,8 @@
     "consolidate.js",
     "template engine",
     "simple",
-    "layouts"
+    "layouts",
+    "markdown"
   ],
   "author": "Ryan Zimmerman <opensrc@ryanzim.com> (http://ryanzim.com)",
   "license": "MIT",
