@@ -7,30 +7,30 @@ var glob = require('glob');
 var yaml = require('js-yaml');
 var marked = require('marked');
 var _ = require('lodash');
-module.exports = function (engine, src, dist, layouts) {
+module.exports = function (engine, src, dist, layouts, cb) {
   // SANITY CHECKS
   // Check that src exists:
   fs.access(src, function (err) {
-    if (err) throw err;
+    if (err) return cb(err);
   });
   // Check that engine is a string:
-  if (typeof engine !== 'string' || engine === '') throw new Error('Please pass a valid engine parameter');
+  if (typeof engine !== 'string' || engine === '') return cb(new Error('Please pass a valid engine parameter'));
   // Check that engine is supported by consolidate.js:
-  if (typeof cons[engine] !== 'function') throw new Error(engine+' is not a valid consolidate.js template engine');
+  if (typeof cons[engine] !== 'function') return cb(new Error(engine+' is not a valid consolidate.js template engine'));
   // MAIN CODE
   // For each html file in src:
   forGlob(path.join(src, '**/*.html'), function (filePath) {
     // Load and parse FM:
     loadFile(filePath, function (err, data) {
-      if (err) throw err;
+      if (err) return cb(err);
       // Render it:
       render(data, filePath, function (err, html) {
-        if (err) throw err;
+        if (err) return cb(err);
         // Get path to write to:
         var writePath=path.join(dist, filePath.replace(src, ''));
         // Output using fs-extra:
         fs.outputFile(writePath, html, function (err) {
-          if (err) throw err;
+          if (err) return cb(err);
         });
       });
     });
@@ -41,19 +41,19 @@ module.exports = function (engine, src, dist, layouts) {
   forGlob(path.join(src, '**/*.@(md|markdown)'), function (filePath) {
     // Load and parse FM:
     loadFile(filePath, function (err, data) {
-      if (err) throw err;
+      if (err) return cb(err);
       marked(data.body, function (err, body) {
-        if (err) throw err;
+        if (err) return cb(err);
         // Overwrite markdown with html:
         data.body=body;
         // Render it:
         render(data, filePath, function (err, html) {
-          if (err) throw err;
+          if (err) return cb(err);
           // Get path to write to:
           var writePath=replaceExt(path.join(dist, filePath.replace(src, '')), '.html');
           // Output using fs-extra:
           fs.outputFile(writePath, html, function (err) {
-            if (err) throw err;
+            if (err) return cb(err);
           });
         });
       });

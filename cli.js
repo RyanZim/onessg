@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* eslint no-console: "off" */
 var argv = require('yargs')
 .usage('$0 -e ejs \n\nOverride Defaults: \n$0 -e ejs -s source/ -d _output -l templates')
 .demand(['e'])
@@ -22,5 +23,10 @@ var argv = require('yargs')
 })
 .help()
 .argv;
-var ssg = require('./index.js');
-ssg(argv.e, argv.s, argv.d, argv.l);
+var onessg = require('./index.js');
+onessg(argv.e, argv.s, argv.d, argv.l, function (err) {
+  if (err) {
+    console.error(err);
+    process.exit(1);
+  }
+});
