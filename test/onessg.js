@@ -1,8 +1,10 @@
 var execSync=require('child_process').execSync;
+var exec=require('child_process').exec;
 var fs=require('fs-extra');
 var path=require('path');
 var assert=require('assert');
 var replaceExt=require('replace-ext');
+var onessg=require('../index.js');
 assert.file=function (fileName) {
   fileName=replaceExt(fileName, '.html');
   var expected=fs.readFileSync(path.join('test/expected', fileName), 'utf8');
@@ -77,5 +79,29 @@ suite('_defaults file', function () {
   });
   test('_defaults.json works', function () {
     assert.file('json/no-author.html');
+  });
+});
+suite('errors', function () { // NOTE: This suite should be run last!
+  test('invalid src', function (done) {
+    onessg('ejs', 'noop', 'test/dist', 'test/layouts', function (e) {
+      done(assert(e));
+    });
+  });
+  test('invalid type for engine', function (done) {
+    onessg(0, 'test/src', 'test/dist', 'test/layouts', function (e) {
+      done(assert(e));
+    });
+  });
+  test('unsupported engine', function (done) {
+    onessg('noop', 'test/src', 'test/dist', 'test/layouts', function (e) {
+      done(assert(e));
+    });
+  });
+  test('cli returns errors', function (done) {
+    this.timeout(5000);
+    this.retries(4);
+    exec('./../cli.js -e ejs -s noop', {cwd: 'test'}, function (e) {
+      return done(assert(e));
+    });
   });
 });
