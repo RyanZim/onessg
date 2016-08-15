@@ -8,7 +8,8 @@
   },
   "scripts": {
     "test": "npm run lint && npm run mocha",
-    "mocha": "mocha --ui tdd",
+    "coverage": "npm run mocha && nyc report --reporter lcov",
+    "mocha": "nyc mocha --ui tdd",
     "lint": "eslint --ignore-path .gitignore '**/*.js'"
   },
   "keywords": [
@@ -38,6 +39,7 @@
   "devDependencies": {
     "ejs": "^2.5.1",
     "eslint": "~3.3.0",
-    "mocha": "^3.0.2"
+    "mocha": "^3.0.2",
+    "nyc": "^7.1.0"
   }
 }
