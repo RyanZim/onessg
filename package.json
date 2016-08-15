@@ -9,7 +9,7 @@
   "scripts": {
     "test": "npm run lint && npm run mocha",
     "mocha": "mocha --ui tdd",
-    "lint": "eslint '**/*.js'"
+    "lint": "eslint --ignore-path .gitignore '**/*.js'"
   },
   "keywords": [
     "Static Site Generator",
