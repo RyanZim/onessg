@@ -6,20 +6,20 @@ var argv = require('yargs')
 .default({
   s: 'src/',
   d: 'dist/',
-  l: 'layouts/'
+  l: 'layouts/',
 })
 .string(['e', 's', 'd', 'l'])
 .alias({
   e: 'engine',
   s: 'src',
   d: 'dist',
-  l: 'layouts'
+  l: 'layouts',
 })
 .describe({
   e: 'Set the valid consolidate.js template engine to use when parsing layouts',
   s: 'Set the src directory',
   d: 'Set the dist directory',
-  l: 'Set the layouts directory'
+  l: 'Set the layouts directory',
 })
 .help()
 .argv;

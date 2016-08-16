@@ -74,50 +74,38 @@ module.exports = function (engine, src, dist, layouts, cb) {
         // Get layouts/layoutName.* :
         var layout=glob.sync(path.join(layouts, data.attributes._layout)+'.*')[0];
         // Glob doesn't throw an error if the layout path doesn't exist, so we do:
-        if (!layout) {
-          cb(new Error('The file: '+path.join(layouts, data.attributes._layout)+'.'+engine+' does not exist'));
-        }
+        if (!layout) cb(new Error('The file: '+path.join(layouts, data.attributes._layout)+'.'+engine+' does not exist'));
         var locals=data.attributes;
         locals._body=data.body;
         // Render with consolidate.js:
         cons[engine](layout, locals, cb);
-      } else {
-        // Else, return body
-        cb(null, data.body);
-      }
+      } else cb(null, data.body); // Else, return body
     });
   }
   // Declare getDefaults inside the main function for access to var src
   function getDefaults(filePath, cb, defaults) {
     glob(path.join(path.dirname(filePath), '_defaults.*'), function (err, res) {
-      if (!defaults) {
-        defaults={};
-      }
       if (err) return cb(err);
-      if (!res[0]) {
-        return recurse();
-      }
+      if (!defaults) defaults={};
+      if (!res[0]) return recurse();
       var ext=path.extname(res[0]);
-      if (ext === '.yaml' || ext === '.yml') {
-        try {
+      try {
+        switch (ext) {
+        case '.yaml':
+        case '.yml':
           _.defaultsDeep(defaults, yaml.safeLoad(fs.readFileSync(res[0], 'utf8')));
-        } catch (e) {
-          return cb(e);
-        }
-      } else if (ext === '.json') {
-        try {
-          // Use fs-extra:
+          break;
+        case '.json':
           _.defaultsDeep(defaults, fs.readJsonSync(res[0]));
-        } catch (e) {
-          return cb(e);
         }
+      } catch (e) {
+        return cb(e);
       }
       recurse();
     });
     function recurse() {
-      if (path.dirname(filePath) === src.replace(path.sep, '')) {
-        return cb(null, defaults);
-      } else {
+      if (path.dirname(filePath) === src.replace(path.sep, '')) return cb(null, defaults);
+      else {
         var newPath=path.dirname(filePath);
         return getDefaults(newPath, cb, defaults);
       }
@@ -128,10 +116,11 @@ module.exports = function (engine, src, dist, layouts, cb) {
 // loadFile() calls (err, front-matter object)
 function loadFile(name, cb) {
   fs.readFile(name, 'utf8', function (err, res) {
-    if (err) { return cb(err); }
+    if (err) return cb(err);
+    var json;
     // Use try...catch for sync front-matter:
     try {
-      var json=fm(res);
+      json=fm(res);
     } catch (e) {
       return cb(e);
     }
@@ -141,7 +130,7 @@ function loadFile(name, cb) {
 // Runs iter over each match of pattern and call cb
 function forGlob(pattern, iter, cb) {
   glob(pattern, {nodir: true}, function (err, res) {
-    if (err) { return cb(err); }
+    if (err) return cb(err);
     res.forEach(iter);
     cb(null);
   });
