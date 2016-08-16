@@ -34,7 +34,7 @@
     "lodash": "^4.14.0",
     "marked": "^0.3.6",
     "replace-ext": "^1.0.0",
-    "yargs": "^4.8.1"
+    "yargs": "^5.0.0"
   },
   "devDependencies": {
     "ejs": "^2.5.1",
