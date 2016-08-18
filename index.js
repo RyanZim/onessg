@@ -140,7 +140,7 @@ function loadFile(name, cb) {
 }
 // Runs iter over each match of pattern and call cb
 function forGlob(pattern, iter, cb) {
-  glob(pattern, function (err, res) {
+  glob(pattern, {nodir: true}, function (err, res) {
     if (err) { return cb(err); }
     res.forEach(iter);
     cb(null);
