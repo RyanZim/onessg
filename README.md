@@ -78,7 +78,7 @@ Notice the local `_body`. This is the contents of the file. For **page-one.html*
 
 **Run:**
 ```bash
-onessg -e ejs
+onessg ejs
 ```
 (Substitute ejs with the name of your template engine)
 
@@ -147,7 +147,7 @@ Note that we have omitted the front-matter. The defaults from the `_defaults` fi
 
 We will run onessg again:
 ```bash
-onessg -e ejs
+onessg ejs
 ```
 
 Our directory structure is now:
@@ -189,18 +189,22 @@ Note that the default title from **src/_defaults.yaml** has been applied. The `r
 ## CLI Usage & Options
 
 ```
-onessg -e ejs
-
-Override Defaults:
-onessg -e ejs -s source/ -d _output -l templates
+onessg <template_engine>
+onessg <template_engine> [-s <source_dir>] [-d <output_dir>] [-l <layout_dir>]
 
 Options:
-  -e, --engine   Set the valid consolidate.js template engine to use when
-                 parsing layouts                             [string] [required]
   -s, --src      Set the src directory                [string] [default: "src/"]
   -d, --dist     Set the dist directory              [string] [default: "dist/"]
   -l, --layouts  Set the layouts directory        [string] [default: "layouts/"]
   --help         Show help                                             [boolean]
+  --version      Show version number                                   [boolean]
+
+Examples:
+  onessg ejs
+  onessg ejs -s posts/ -d output/ -l templates/
+
+A list of supported template engines may be found at:
+https://github.com/tj/consolidate.js/#supported-template-engines.
 ```
 
 ## Development

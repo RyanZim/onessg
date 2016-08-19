@@ -15,7 +15,7 @@ assert.file=function (fileName) {
 // fs-extra:
 fs.removeSync('test/dist/');
 // Build with cli:
-execSync('./../cli.js -e ejs', {cwd: 'test'});
+execSync('./../cli.js ejs', {cwd: 'test'});
 // Tests:
 suite('plain html', function () {
   test('empty file', function () {
@@ -100,7 +100,7 @@ suite('errors', function () { // NOTE: This suite should be run last!
   test('cli returns errors', function (done) {
     this.timeout(5000);
     this.retries(4);
-    exec('./../cli.js -e ejs -s noop', {cwd: 'test'}, function (e) {
+    exec('./../cli.js ejs -s noop', {cwd: 'test'}, function (e) {
       return done(assert(e));
     });
   });
