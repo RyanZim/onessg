@@ -104,7 +104,7 @@ module.exports = function (engine, src, dist, layouts, cb) {
       recurse();
     });
     function recurse() {
-      if (path.dirname(filePath)+'/' === path.normalize(src+'/')) return cb(null, defaults);
+      if (path.dirname(filePath)+path.sep === path.normalize(src+path.sep)) return cb(null, defaults);
       else {
         var newPath=path.dirname(filePath);
         return getDefaults(newPath, cb, defaults);
