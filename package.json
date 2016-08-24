@@ -9,6 +9,7 @@
   "scripts": {
     "test": "npm run lint && npm run mocha",
     "coverage": "npm run mocha && nyc report --reporter lcov",
+    "benchmark": "./cli.js ejs -s test/src -d test/dist -l test/layouts",
     "mocha": "nyc mocha --ui tdd",
     "lint": "eslint --ignore-path .gitignore '**/*.js'"
   },
