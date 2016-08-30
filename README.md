@@ -14,6 +14,19 @@ onessg changes that. We believe in the unix philosophy: do one thing and do it w
 
 We also believe in setting useful, but overridable defaults. Because of this, onessg requires no configuration files to get started.
 
+## Contents
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+
+- [Installation](#installation)
+- [Tutorial](#tutorial)
+- [CLI Usage & Options](#cli-usage-&-options)
+- [Contributing](#contributing)
+- [License](#license)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 ## Installation
 
 ```bash
@@ -22,7 +35,9 @@ npm i onessg
 
 You will also need to install your favorite [consolidate.js-supported template engine](https://github.com/tj/consolidate.js/#supported-template-engines).
 
-## Example
+**Note:** We recommend installing onessg as a devDependency (with the `-D` flag) and running it via an npm script. If you choose to install onessg globally, you will also need to install your template engine globally as well. 
+
+## Tutorial
 
 Examples will use [ejs](https://github.com/mde/ejs/) as the template engine, you can use any template engine supported by [consolidate.js](https://github.com/tj/consolidate.js/).
 
@@ -207,9 +222,11 @@ A list of supported template engines may be found at:
 https://github.com/tj/consolidate.js/#supported-template-engines.
 ```
 
-## Development
+## Contributing
 
 Contributions welcome; please discuss before making significant changes. All new features should be tested. Run `npm test` to run the tests. You can generate a code coverage report by running `npm run coverage`. The report will be found at `coverage/lcov-report/index.html`.
+
+If you make changes to the headings in `README.md`, please run `npm run toc` to update the table of contents.
 
 For bugs :beetle:, feature requests :bulb:, and questions :speech_balloon:, please file an issue!
 

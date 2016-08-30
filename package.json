@@ -10,6 +10,7 @@
     "test": "npm run lint && npm run mocha",
     "coverage": "npm run mocha && nyc report --reporter lcov",
     "benchmark": "./cli.js ejs -s test/src -d test/dist -l test/layouts",
+    "toc": "doctoc README.md",
     "mocha": "nyc mocha --ui tdd",
     "lint": "eslint --ignore-path .gitignore '**/*.js'"
   },
@@ -38,6 +39,7 @@
     "yargs": "^5.0.0"
   },
   "devDependencies": {
+    "doctoc": "^1.2.0",
     "ejs": "^2.5.1",
     "eslint": "~3.4.0",
     "mocha": "^3.0.2",
