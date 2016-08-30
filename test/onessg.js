@@ -80,20 +80,20 @@ suite('_defaults file', function () {
     assert.file('json/no-author.html');
   });
 });
-suite('errors', function () { // NOTE: This suite should be run last!
+suite('errors', function () {
   var dirs={};
   setup(function () {
     dirs.src='test/src';
     dirs.dist='test/dist';
     dirs.layouts='test/layouts';
   });
-  test('invalid src', function (done) {
+  test('invalid src/', function (done) {
     dirs.src='noop';
     onessg('ejs', dirs, function (e) {
       done(assert(e));
     });
   });
-  test('invalid layouts', function (done) {
+  test('invalid layouts/', function (done) {
     dirs.layouts='noop';
     onessg('ejs', dirs, function (e) {
       done(assert(e));
@@ -109,8 +109,11 @@ suite('errors', function () { // NOTE: This suite should be run last!
       done(assert(e));
     });
   });
-  test('cli returns errors', function () {
-    this.timeout(5000);
+});
+suite('cli', function () {
+  this.timeout(5000);
+  this.slow(3000);
+  test('returns errors', function () {
     assert.throws(function () {
       execSync('./../cli.js ejs -s noop', {cwd: 'test'});
     });
