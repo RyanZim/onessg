@@ -1,5 +1,4 @@
 var execSync=require('child_process').execSync;
-var exec=require('child_process').exec;
 var fs=require('fs-extra');
 var path=require('path');
 var assert=require('assert');
@@ -82,26 +81,38 @@ suite('_defaults file', function () {
   });
 });
 suite('errors', function () { // NOTE: This suite should be run last!
+  var dirs={};
+  setup(function () {
+    dirs.src='test/src';
+    dirs.dist='test/dist';
+    dirs.layouts='test/layouts';
+  });
   test('invalid src', function (done) {
-    onessg('ejs', 'noop', 'test/dist', 'test/layouts', function (e) {
+    dirs.src='noop';
+    onessg('ejs', dirs, function (e) {
+      done(assert(e));
+    });
+  });
+  test('invalid layouts', function (done) {
+    dirs.layouts='noop';
+    onessg('ejs', dirs, function (e) {
       done(assert(e));
     });
   });
   test('invalid type for engine', function (done) {
-    onessg(0, 'test/src', 'test/dist', 'test/layouts', function (e) {
+    onessg(0, dirs, function (e) {
       done(assert(e));
     });
   });
   test('unsupported engine', function (done) {
-    onessg('noop', 'test/src', 'test/dist', 'test/layouts', function (e) {
+    onessg('noop', dirs, function (e) {
       done(assert(e));
     });
   });
-  test('cli returns errors', function (done) {
+  test('cli returns errors', function () {
     this.timeout(5000);
-    this.retries(4);
-    exec('./../cli.js ejs -s noop', {cwd: 'test'}, function (e) {
-      return done(assert(e));
+    assert.throws(function () {
+      execSync('./../cli.js ejs -s noop', {cwd: 'test'});
     });
   });
 });

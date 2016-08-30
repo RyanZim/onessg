@@ -27,7 +27,14 @@ var argv = require('yargs')
 .epilog('A list of supported template engines may be found at: https://github.com/tj/consolidate.js/#supported-template-engines.')
 .argv;
 var onessg = require('./index.js');
-onessg(argv._[0], argv.s, argv.d, argv.l, function (err) {
-  console.error(err);
-  process.exit(1);
+var dirs={
+  src: argv.s,
+  dist: argv.d,
+  layouts: argv.l,
+};
+onessg(argv._[0], dirs, function (err) {
+  if (err) {
+    console.error(err);
+    process.exit(1);
+  }
 });
