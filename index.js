@@ -60,7 +60,7 @@ function render(data, engine, filePath, cb) {
       // Get layouts/layoutName.* :
       var layout=glob.sync(path.join(layouts, data.attributes._layout)+'.*')[0];
       // Glob doesn't throw an error if the layout path doesn't exist, so we do:
-      if (!layout) cb(new Error('The file: '+path.join(layouts, data.attributes._layout)+'.'+engine+' does not exist'));
+      if (!layout) cb(new Error('The layout: '+data.attributes._layout+' cannot be found in '+layouts));
       var locals=data.attributes;
       locals._body=data.body;
       // Render with consolidate.js:
