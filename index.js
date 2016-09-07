@@ -2,7 +2,7 @@ var fs = require('fs-extra');
 var path = require('path');
 var replaceExt=require('replace-ext');
 var glob = require('glob');
-var fm = require('front-matter');
+var matter = require('gray-matter');
 var cons = require('consolidate');
 var yaml = require('js-yaml');
 var marked = require('marked');
@@ -27,10 +27,10 @@ module.exports = function (engine, dirs, cb) {
     loadFile(filePath, function (err, data) {
       if (err) return cb(err);
       // Run through middleware:
-      middleware(filePath, data.body, function (err, body) {
+      middleware(filePath, data.content, function (err, body) {
         if (err) return cb(err);
         // Overwrite body:
-        data.body=body;
+        data.content=body;
         // Render it:
         render(data, engine, filePath, function (err, html) {
           if (err) return cb(err);
@@ -54,18 +54,18 @@ function render(data, engine, filePath, cb) {
   getDefaults(filePath, function (err, defaults) {
     if (err) return cb(err);
     // Set Defaults:
-    _.defaultsDeep(data.attributes, defaults);
+    _.defaultsDeep(data.data, defaults);
     // If layout, render:
-    if (data.attributes._layout) {
+    if (data.data._layout) {
       // Get layouts/layoutName.* :
-      var layout=glob.sync(path.join(layouts, data.attributes._layout)+'.*')[0];
+      var layout=glob.sync(path.join(layouts, data.data._layout)+'.*')[0];
       // Glob doesn't throw an error if the layout path doesn't exist, so we do:
-      if (!layout) cb(new Error('The layout: '+data.attributes._layout+' cannot be found in '+layouts));
-      var locals=data.attributes;
-      locals._body=data.body;
+      if (!layout) cb(new Error('The layout: '+data.data._layout+' cannot be found in '+layouts));
+      var locals=data.data;
+      locals._body=data.content;
       // Render with consolidate.js:
       cons[engine](layout, locals, cb);
-    } else cb(null, data.body); // Else, return body
+    } else cb(null, data.content); // Else, return body
   });
 }
 function getDefaults(filePath, cb, defaults) {
@@ -115,7 +115,7 @@ function loadFile(name, cb) {
     var json;
     // Use try...catch for sync front-matter:
     try {
-      json=fm(res);
+      json=matter(res);
     } catch (e) {
       return cb(e);
     }

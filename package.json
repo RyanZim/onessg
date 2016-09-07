@@ -30,9 +30,9 @@
   "dependencies": {
     "async": "^2.0.1",
     "consolidate": "^0.14.1",
-    "front-matter": "^2.1.0",
     "fs-extra": "^0.30.0",
     "glob": "^7.0.5",
+    "gray-matter": "^2.0.2",
     "js-yaml": "^3.6.1",
     "lodash": "^4.14.0",
     "marked": "^0.3.6",

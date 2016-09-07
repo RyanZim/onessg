@@ -23,9 +23,6 @@ suite('plain html', function () {
   test('text', function () {
     assert.file('text.html');
   });
-  test('empty front-matter', function () {
-    assert.file('empty-fm.html');
-  });
 });
 suite('markdown', function () {
   test('empty file', function () {
