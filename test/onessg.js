@@ -1,9 +1,10 @@
-var execSync=require('child_process').execSync;
 var fs=require('fs-extra');
 var path=require('path');
 var assert=require('assert');
+var suppose=require('suppose');
+var resolve=require('autoresolve');
 var replaceExt=require('replace-ext');
-var onessg=require('../index.js');
+var onessg=require(resolve('index.js'));
 assert.file=function (fileName) {
   fileName=replaceExt(fileName, '.html');
   var expected=fs.readFileSync(path.join('test/expected', fileName), 'utf8');
@@ -13,8 +14,35 @@ assert.file=function (fileName) {
 // Clean dist:
 // fs-extra:
 fs.removeSync('test/dist/');
-// Build with cli:
-execSync('./../cli.js ejs', {cwd: 'test'});
+suite('cli', function () {
+  this.timeout(5000);
+  this.slow(3000);
+  test('works', function (done) {
+    // NOTE: This also builds the files for the unit tests below!
+    suppose(resolve('cli.js'), ['ejs', '-s', 'test/src', '-d', 'test/dist', '-l', 'test/layouts'])
+    .on('error', function (err) {
+      done(err);
+    })
+    .end(function (code) {
+      assert.equal(code, 0, 'CLI exited with non-zero exit code');
+      done();
+    });
+  });
+  test('returns errors', function (done) {
+    var error='';
+    // Run cli.js ejs -s noop:
+    suppose(resolve('cli.js'), ['ejs', '-s', 'noop'])
+    .on('error', function (err) {
+      error=err;
+    })
+    .end(function (code) {
+      assert.notEqual(code, 0, 'expected CLI to return non-zero exit code on error');
+      // Errors:
+      assert(error, 'expected CLI to print error message');
+      done();
+    });
+  });
+});
 // Tests:
 suite('plain html', function () {
   test('empty file', function () {
@@ -104,15 +132,6 @@ suite('errors', function () {
   test('unsupported engine', function (done) {
     onessg('noop', dirs, function (e) {
       done(assert(e));
-    });
-  });
-});
-suite('cli', function () {
-  this.timeout(5000);
-  this.slow(3000);
-  test('returns errors', function () {
-    assert.throws(function () {
-      execSync('./../cli.js ejs -s noop', {cwd: 'test'});
     });
   });
 });
