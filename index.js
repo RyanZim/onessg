@@ -22,7 +22,7 @@ module.exports = function (engine, dirs, cb) {
   // Check that engine is supported by consolidate.js:
   if (typeof cons[engine] !== 'function') return cb(new Error(engine+' is not a valid consolidate.js template engine'));
   // For each file in src:
-  forGlob(path.join(src, '**/*.@(html|md|markdown)'), function (filePath, cb) {
+  forGlob('**/*.@(html|md|markdown)', function (filePath, cb) {
     // Load and parse FM:
     loadFile(filePath, function (err, data) {
       if (err) return cb(err);
@@ -35,7 +35,7 @@ module.exports = function (engine, dirs, cb) {
         render(data, engine, filePath, function (err, html) {
           if (err) return cb(err);
           // Get path to write to:
-          var writePath=replaceExt(path.join(dist, filePath.replace(src, '')), '.html');
+          var writePath=replaceExt(path.join(dist, filePath), '.html');
           // Output using fs-extra:
           fs.outputFile(writePath, html, function (err) {
             if (err) return cb(err);
@@ -51,7 +51,7 @@ module.exports = function (engine, dirs, cb) {
 // HELPER FUNCTIONS
 function render(data, engine, filePath, cb) {
   // Get defaults:
-  getDefaults(filePath, function (err, defaults) {
+  getDefaults(path.join(src, filePath), function (err, defaults) {
     if (err) return cb(err);
     // Set Defaults:
     _.defaultsDeep(data.data, defaults);
@@ -110,7 +110,7 @@ function middleware(filePath, text, cb) {
 }
 // loadFile() calls (err, front-matter object)
 function loadFile(name, cb) {
-  fs.readFile(name, 'utf8', function (err, res) {
+  fs.readFile(path.join(src, name), 'utf8', function (err, res) {
     if (err) return cb(err);
     var json;
     // Use try...catch for sync front-matter:
@@ -124,7 +124,7 @@ function loadFile(name, cb) {
 }
 // Runs iter over each match of pattern and call cb
 function forGlob(pattern, iter, cb) {
-  glob(pattern, {nodir: true}, function (err, res) {
+  glob(pattern, {nodir: true, cwd: src}, function (err, res) {
     if (err) return cb(err);
     async.each(res, iter, cb);
   });
