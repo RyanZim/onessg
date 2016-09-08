@@ -34,13 +34,8 @@ module.exports = function (engine, dirs, cb) {
         // Render it:
         render(data, engine, filePath, function (err, html) {
           if (err) return cb(err);
-          // Get path to write to:
-          var writePath=replaceExt(path.join(dist, filePath), '.html');
-          // Output using fs-extra:
-          fs.outputFile(writePath, html, function (err) {
-            if (err) return cb(err);
-            cb();
-          });
+          // Write to file and pass cb
+          writeFile(html, filePath, cb);
         });
       });
     });
@@ -107,6 +102,14 @@ function middleware(filePath, text, cb) {
     // Render markdown:
     return marked(text, cb);
   }
+}
+function writeFile(html, filePath, cb) {
+  // Get path to write to:
+  var writePath=replaceExt(path.join(dist, filePath), '.html');
+  // Output using fs-extra:
+  fs.outputFile(writePath, html, function (err) {
+    cb(err);
+  });
 }
 // loadFile() calls (err, front-matter object)
 function loadFile(name, cb) {
