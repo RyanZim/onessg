@@ -4,16 +4,16 @@ var argv = require('yargs')
 .usage('$0 <template_engine> \n' +
 '$0 <template_engine> [-s <source_dir>] [-d <output_dir>] [-l <layout_dir>]')
 .demand(1, 1, 'Error: You must specify an template engine')
-.default({
-  s: 'src/',
-  d: 'dist/',
-  l: 'layouts/',
-})
-.string(['s', 'd', 'l'])
 .alias({
   s: 'src',
   d: 'dist',
   l: 'layouts',
+})
+.string(['s', 'd', 'l'])
+.default({
+  s: 'src/',
+  d: 'dist/',
+  l: 'layouts/',
 })
 .describe({
   s: 'Set the src directory',

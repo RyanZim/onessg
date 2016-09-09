@@ -24,15 +24,15 @@ module.exports = function (engine, dirs, cb) {
   // For each file in src:
   forGlob('**/*.@(html|md|markdown)', function (filePath, cb) {
     // Load and parse FM:
-    loadFile(filePath, function (err, data) {
+    loadFile(filePath, function (err, file) {
       if (err) return cb(err);
       // Run through middleware:
-      middleware(filePath, data.content, function (err, body) {
+      middleware(file.content, path.extname(filePath), function (err, body) {
         if (err) return cb(err);
         // Overwrite body:
-        data.content=body;
+        file.content=body;
         // Render it:
-        render(data, engine, filePath, function (err, html) {
+        render(file, engine, filePath, function (err, html) {
           if (err) return cb(err);
           // Write to file and pass cb
           writeFile(html, filePath, cb);
@@ -44,23 +44,23 @@ module.exports = function (engine, dirs, cb) {
   });
 };
 // HELPER FUNCTIONS
-function render(data, engine, filePath, cb) {
+function render(file, engine, filePath, cb) {
   // Get defaults:
   getDefaults(path.join(src, filePath), function (err, defaults) {
     if (err) return cb(err);
     // Set Defaults:
-    _.defaultsDeep(data.data, defaults);
+    _.defaultsDeep(file.data, defaults);
     // If layout, render:
-    if (data.data._layout) {
+    if (file.data._layout) {
       // Get layouts/layoutName.* :
-      var layout=glob.sync(path.join(layouts, data.data._layout)+'.*')[0];
+      var layout=glob.sync(path.join(layouts, file.data._layout)+'.*')[0];
       // Glob doesn't throw an error if the layout path doesn't exist, so we do:
-      if (!layout) cb(new Error('The layout: '+data.data._layout+' cannot be found in '+layouts));
-      var locals=data.data;
-      locals._body=data.content;
+      if (!layout) cb(new Error('The layout: '+file.data._layout+' cannot be found in '+layouts));
+      var locals=file.data;
+      locals._body=file.content;
       // Render with consolidate.js:
       cons[engine](layout, locals, cb);
-    } else cb(null, data.content); // Else, return body
+    } else cb(null, file.content); // Else, return body
   });
 }
 function getDefaults(filePath, cb, defaults) {
@@ -91,9 +91,9 @@ function getDefaults(filePath, cb, defaults) {
     }
   }
 }
-function middleware(filePath, text, cb) {
+function middleware(text, ext, cb) {
   // Check path's ext:
-  switch (path.extname(filePath)) {
+  switch (ext) {
   case '.html':
     // noop:
     return cb(null, text);
