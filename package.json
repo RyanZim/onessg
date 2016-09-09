@@ -41,7 +41,7 @@
   "devDependencies": {
     "doctoc": "^1.2.0",
     "ejs": "^2.5.1",
-    "eslint": "~3.4.0",
+    "eslint": "~3.5.0",
     "mocha": "^3.0.2",
     "nyc": "^8.1.0"
   }
