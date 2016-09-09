@@ -101,6 +101,9 @@ suite('_defaults file', function () {
   test('_defaults file in subfolder overrides root _defaults', function () {
     assert.file('overrides/no-author-no-editor.html');
   });
+  test('works in nested subfolders', function () {
+    assert.file('nested/folder/no-author-no-editor.html');
+  });
   test('_defaults.json works', function () {
     assert.file('json/no-author.html');
   });
