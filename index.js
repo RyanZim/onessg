@@ -63,32 +63,47 @@ function render(file, engine, filePath, cb) {
     } else cb(null, file.content); // Else, return body
   });
 }
-function getDefaults(filePath, cb, defaults) {
-  glob(path.join(path.dirname(filePath), '_defaults.*'), function (err, res) {
-    if (err) return cb(err);
-    if (!defaults) defaults={};
-    if (!res[0]) return recurse();
-    var ext=path.extname(res[0]);
-    try {
-      switch (ext) {
-      case '.yaml':
-      case '.yml':
-        _.defaultsDeep(defaults, yaml.safeLoad(fs.readFileSync(res[0], 'utf8')));
-        break;
-      case '.json':
-        _.defaultsDeep(defaults, fs.readJsonSync(res[0]));
-      }
-    } catch (e) {
-      return cb(e);
-    }
-    recurse();
+function getDefaults(filePath, cb) {
+  var dirPath=path.dirname(filePath);
+  var dirArr=[dirPath];
+  var defaultArr=[];
+  recurse(dirPath);
+  async.eachOf(dirArr, load, function (err) {
+    if (err) cb(err);
+    cb(null, _.spread(_.defaultsDeep)(defaultArr));
   });
-  function recurse() {
-    if (path.dirname(filePath)+path.sep === path.normalize(src+path.sep)) return cb(null, defaults);
+  function recurse(filePath) {
+    if (filePath+path.sep === path.normalize(src+path.sep)) return;
     else {
       var newPath=path.dirname(filePath);
-      return getDefaults(newPath, cb, defaults);
+      dirArr.push(newPath);
+      return recurse(newPath);
     }
+  }
+  function load(dirPath, i, cb) {
+    glob(path.join(dirPath, '_defaults.*'), function (err, res) {
+      if (err) return cb(err);
+      var defaults={};
+      if (!res[0]) {
+        defaultArr[i]=defaults;
+        cb(null);
+        return;
+      }
+      try {
+        switch (path.extname(res[0])) {
+        case '.yaml':
+        case '.yml':
+          defaults=yaml.safeLoad(fs.readFileSync(res[0], 'utf8'));
+          break;
+        case '.json':
+          defaults=fs.readJsonSync(res[0]);
+        }
+      } catch (e) {
+        return cb(e);
+      }
+      defaultArr[i]=defaults;
+      cb(null);
+    });
   }
 }
 function middleware(text, ext, cb) {
