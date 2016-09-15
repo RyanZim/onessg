@@ -71,10 +71,10 @@ function getDefaults(filePath, cb) {
     if (err) cb(err);
     cb(null, _.spread(_.defaultsDeep)(defaultArr));
   });
-  function recurse(filePath) {
-    if (path.normalizeTrim(filePath) === path.normalizeTrim(src)) return;
+  function recurse(dirPath) {
+    if (path.normalizeTrim(dirPath) === path.normalizeTrim(src)) return;
     else {
-      var newPath=path.dirname(filePath);
+      var newPath=path.dirname(dirPath);
       dirArr.push(newPath);
       return recurse(newPath);
     }
@@ -83,11 +83,7 @@ function getDefaults(filePath, cb) {
     glob(path.join(dirPath, '_defaults.*'), function (err, res) {
       if (err) return cb(err);
       var defaults={};
-      if (!res[0]) {
-        defaultArr[i]=defaults;
-        cb(null);
-        return;
-      }
+      if (!res[0]) return finish();
       try {
         switch (path.extname(res[0])) {
         case '.yaml':
@@ -100,8 +96,12 @@ function getDefaults(filePath, cb) {
       } catch (e) {
         return cb(e);
       }
-      defaultArr[i]=defaults;
-      cb(null);
+      return finish();
+      function finish() {
+        defaultArr[i]=defaults;
+        cb(null);
+        return;
+      }
     });
   }
 }
