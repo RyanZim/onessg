@@ -1,6 +1,5 @@
 var fs = require('fs-extra');
-var path = require('path');
-var replaceExt=require('replace-ext');
+var path = require('path-extra');
 var glob = require('glob');
 var matter = require('gray-matter');
 var cons = require('consolidate');
@@ -73,7 +72,7 @@ function getDefaults(filePath, cb) {
     cb(null, _.spread(_.defaultsDeep)(defaultArr));
   });
   function recurse(filePath) {
-    if (filePath+path.sep === path.normalize(src+path.sep)) return;
+    if (path.normalizeTrim(filePath) === path.normalizeTrim(src)) return;
     else {
       var newPath=path.dirname(filePath);
       dirArr.push(newPath);
@@ -119,8 +118,8 @@ function middleware(text, ext, cb) {
   }
 }
 function writeFile(html, filePath, cb) {
-  // Get path to write to:
-  var writePath=replaceExt(path.join(dist, filePath), '.html');
+  // Get path to write to using path-extra:
+  var writePath=path.replaceExt(path.join(dist, filePath), '.html');
   // Output using fs-extra:
   fs.outputFile(writePath, html, function (err) {
     cb(err);

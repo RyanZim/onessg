@@ -1,12 +1,12 @@
 var fs=require('fs-extra');
-var path=require('path');
+var path=require('path-extra');
 var assert=require('assert');
 var suppose=require('suppose');
 var resolve=require('autoresolve');
-var replaceExt=require('replace-ext');
 var onessg=require(resolve('index.js'));
 assert.file=function (fileName) {
-  fileName=replaceExt(fileName, '.html');
+  // path-extra:
+  fileName=path.replaceExt(fileName, '.html');
   var expected=fs.readFileSync(path.join('test/expected', fileName), 'utf8');
   var actual=fs.readFileSync(path.join('test/dist', fileName), 'utf8');
   assert.equal(actual, expected);
