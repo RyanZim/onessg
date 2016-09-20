@@ -1,3 +1,4 @@
+'use strict';
 var fs=require('fs-extra');
 var path=require('path-extra');
 var assert=require('assert');
@@ -29,7 +30,7 @@ suite('cli', function () {
     });
   });
   test('returns errors', function (done) {
-    var error='';
+    var error;
     // Run cli.js ejs -s noop:
     suppose(resolve('cli.js'), ['ejs', '-s', 'noop'])
     .on('error', function (err) {

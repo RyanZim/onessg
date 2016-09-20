@@ -1,7 +1,11 @@
+"use strict";
 module.exports = {
     "env": {
         "node": true,
         "mocha": true
+    },
+    "parserOptions": {
+      "ecmaVersion": 6
     },
     "extends": "eslint:recommended",
     "rules": {
@@ -11,6 +15,7 @@ module.exports = {
         "no-trailing-spaces": "error",
         "quotes": ["error", "single", {"avoidEscape": true}],
         "semi": ["error", "always"],
+        "strict": "error",
         // Braces:
         "curly": ["error", "multi"],
         "brace-style": ["error", "1tbs"],

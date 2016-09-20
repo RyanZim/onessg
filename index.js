@@ -1,3 +1,4 @@
+'use strict';
 var fs = require('fs-extra');
 var path = require('path-extra');
 var glob = require('glob');
@@ -19,7 +20,7 @@ module.exports = function (engine, dirs, cb) {
   // Check that engine is a string:
   if (typeof engine !== 'string' || engine === '') return cb(new Error('Please pass a valid engine parameter'));
   // Check that engine is supported by consolidate.js:
-  if (typeof cons[engine] !== 'function') return cb(new Error(engine+' is not a valid consolidate.js template engine'));
+  if (typeof cons[engine] !== 'function') return cb(new Error(`${engine} is not a valid consolidate.js template engine`));
   // For each file in src:
   forGlob('**/*.@(html|md|markdown)', function (filePath, cb) {
     // Load and parse FM:
@@ -52,10 +53,10 @@ function render(file, engine, filePath, cb) {
     // If layout, render:
     if (file.data._layout) {
       // Get layouts/layoutName.* :
-      var layout=glob.sync(path.join(layouts, file.data._layout)+'.*')[0];
+      let layout=glob.sync(path.join(layouts, file.data._layout)+'.*')[0];
       // Glob doesn't throw an error if the layout path doesn't exist, so we do:
-      if (!layout) cb(new Error('The layout: '+file.data._layout+' cannot be found in '+layouts));
-      var locals=file.data;
+      if (!layout) cb(new Error(`The layout: ${file.data._layout} cannot be found in ${layouts}`));
+      let locals=file.data;
       locals._body=file.content;
       // Render with consolidate.js:
       cons[engine](layout, locals, cb);
@@ -74,7 +75,7 @@ function getDefaults(filePath, cb) {
   function recurse(dirPath) {
     if (path.normalizeTrim(dirPath) === path.normalizeTrim(src)) return;
     else {
-      var newPath=path.dirname(dirPath);
+      let newPath=path.dirname(dirPath);
       dirArr.push(newPath);
       return recurse(newPath);
     }
