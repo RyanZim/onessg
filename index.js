@@ -6,7 +6,6 @@ var matter = require('gray-matter');
 var cons = require('consolidate');
 var yaml = require('js-yaml');
 var marked = require('marked');
-var async = require('async');
 var _ = require('lodash');
 // Directory vars:
 var src;
@@ -143,11 +142,20 @@ function loadFile(name, cb) {
 }
 // Runs iter over each match of pattern and call cb
 function forGlob(pattern, iter, cb) {
-  glob(pattern, {nodir: true, cwd: src}, function (err, res) {
-    if (err) return cb(err);
-    async.each(res, iter, cb);
+  var arr;
+  try {
+    // Sync doesn't matter here:
+    arr = globby.sync(pattern, {nodir: true, cwd: src});
+  } catch (e) {
+    cb(e);
+  }
+  var count=0;
+  arr.forEach(function (item) {
+    iter(item, function (err) {
+      if (err) return cb(err);
+      if (++count === arr.length) cb(null);
+    });
   });
-  return;
 }
 
 function setDirs(dirs, cb) {
