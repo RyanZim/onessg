@@ -36,7 +36,7 @@
     "lodash": "^4.14.0",
     "marked": "^0.3.6",
     "path-extra": "^4.0.0",
-    "yargs": "^5.0.0"
+    "yargs": "^6.0.0"
   },
   "devDependencies": {
     "autoresolve": "0.0.3",
