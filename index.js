@@ -1,7 +1,7 @@
 'use strict';
 var fs = require('fs-extra');
 var path = require('path-extra');
-var glob = require('glob');
+var globby = require('globby');
 var matter = require('gray-matter');
 var cons = require('consolidate');
 var yaml = require('js-yaml');
@@ -52,8 +52,8 @@ function render(file, engine, filePath, cb) {
     // If layout, render:
     if (file.data._layout) {
       // Get layouts/layoutName.* :
-      let layout=glob.sync(path.join(layouts, file.data._layout)+'.*')[0];
-      // Glob doesn't throw an error if the layout path doesn't exist, so we do:
+      let layout=globby.sync(path.join(layouts, file.data._layout)+'.*')[0];
+      // Globby doesn't throw an error if the layout path doesn't exist, so we do:
       if (!layout) cb(new Error(`The layout: ${file.data._layout} cannot be found in ${layouts}`));
       let locals=file.data;
       locals._body=file.content;
@@ -84,25 +84,19 @@ function getDefaults(filePath, cb) {
     }
   }
   function load(dirPath) {
-    return new Promise(function (resolve, reject) {
-      glob(path.join(dirPath, '_defaults.*'), function (err, res) {
-        if (err) return cb(err);
-        var defaults={};
-        if (!res[0]) return resolve(defaults);
-        try {
-          switch (path.extname(res[0])) {
-          case '.yaml':
-          case '.yml':
-            defaults=yaml.safeLoad(fs.readFileSync(res[0], 'utf8'));
-            break;
-          case '.json':
-            defaults=fs.readJsonSync(res[0]);
-          }
-        } catch (e) {
-          reject(e);
-        }
-        resolve(defaults);
-      });
+    return globby(path.join(dirPath, '_defaults.*')).then(function (res) {
+      var defaults={};
+      if (!res[0]) return defaults;
+      // We are in a promise chain, so don't worry about errors:
+      switch (path.extname(res[0])) {
+      case '.yaml':
+      case '.yml':
+        defaults=yaml.safeLoad(fs.readFileSync(res[0], 'utf8'));
+        break;
+      case '.json':
+        defaults=fs.readJsonSync(res[0]);
+      }
+      return defaults;
     });
   }
 }
