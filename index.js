@@ -65,44 +65,45 @@ function render(file, engine, filePath, cb) {
 }
 function getDefaults(filePath, cb) {
   var dirPath=path.dirname(filePath);
-  var dirArr=[dirPath];
-  var defaultArr=[];
+  var arr=[load(dirPath)];
   recurse(dirPath);
-  async.eachOf(dirArr, load, function (err) {
-    if (err) cb(err);
-    cb(null, _.spread(_.defaultsDeep)(defaultArr));
+  Promise.all(arr)
+  .then(function (arr) {
+    // Combine defaults:
+    cb(null, _.spread(_.defaultsDeep)(arr));
+  })
+  .catch(function (err) {
+    cb(err);
   });
   function recurse(dirPath) {
+    // If we have reached src/, stop:
     if (path.normalizeTrim(dirPath) === path.normalizeTrim(src)) return;
     else {
       let newPath=path.dirname(dirPath);
-      dirArr.push(newPath);
+      arr.push(load(newPath));
       return recurse(newPath);
     }
   }
-  function load(dirPath, i, cb) {
-    glob(path.join(dirPath, '_defaults.*'), function (err, res) {
-      if (err) return cb(err);
-      var defaults={};
-      if (!res[0]) return finish();
-      try {
-        switch (path.extname(res[0])) {
-        case '.yaml':
-        case '.yml':
-          defaults=yaml.safeLoad(fs.readFileSync(res[0], 'utf8'));
-          break;
-        case '.json':
-          defaults=fs.readJsonSync(res[0]);
+  function load(dirPath) {
+    return new Promise(function (resolve, reject) {
+      glob(path.join(dirPath, '_defaults.*'), function (err, res) {
+        if (err) return cb(err);
+        var defaults={};
+        if (!res[0]) return resolve(defaults);
+        try {
+          switch (path.extname(res[0])) {
+          case '.yaml':
+          case '.yml':
+            defaults=yaml.safeLoad(fs.readFileSync(res[0], 'utf8'));
+            break;
+          case '.json':
+            defaults=fs.readJsonSync(res[0]);
+          }
+        } catch (e) {
+          reject(e);
         }
-      } catch (e) {
-        return cb(e);
-      }
-      return finish();
-      function finish() {
-        defaultArr[i]=defaults;
-        cb(null);
-        return;
-      }
+        resolve(defaults);
+      });
     });
   }
 }
