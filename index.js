@@ -47,8 +47,8 @@ function render(file, engine, filePath, cb) {
   // Get defaults:
   getDefaults(path.join(src, filePath), function (err, defaults) {
     if (err) return cb(err);
-    // Set Defaults:
-    _.defaultsDeep(file.data, defaults);
+    // Set Defaults (cache is set to true by default):
+    _.defaultsDeep(file.data, defaults, {cache: true});
     // If layout, render:
     if (file.data._layout) {
       // Get layouts/layoutName.* :
