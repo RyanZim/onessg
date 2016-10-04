@@ -28,6 +28,8 @@ module.exports = {
         "comma-dangle": ["error", "always-multiline"],
         "comma-style": ["error", "last"],
         "comma-spacing": ["error", { "before": false, "after": true }],
+        // Other:
+        "no-console": "warn",
         "block-scoped-var": "error",
         "eqeqeq": ["error", "smart"],
         "handle-callback-err": "error",
