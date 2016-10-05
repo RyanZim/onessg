@@ -5,9 +5,10 @@ var path = require('path-extra');
 var globby = require('globby');
 var matter = require('gray-matter');
 var cons = require('consolidate');
-var yaml = require('js-yaml');
 var marked = p(require('marked'));
 var _ = require('lodash');
+// Local Modules:
+var getDefaults = require('./lib/getDefaults.js');
 // Config vars:
 var engine;
 var src;
@@ -65,52 +66,23 @@ function processFile(filePath) {
   });
 }
 // HELPER FUNCTIONS
-function render(data) {
-  return globby(path.join(layouts, data._layout)+'.*')
-  .then(function (arr) {
-    var layout = arr[0];
-    // Globby doesn't throw an error if the layout path doesn't exist, so we do:
-    if (!layout) throw new Error(`The layout: ${data._layout} cannot be found in ${layouts}`);
-    // Render with consolidate.js:
-    return p(cons[engine])(layout, data);
+
+// Accepts filename
+// Returns Promise(data object)
+function loadFile(name) {
+  return p(fs.readFile)(path.join(src, name), 'utf8')
+  .then(function (text) {
+    return matter(text);
+  })
+  .then(function (file) {
+    var data = file.data;
+    data._body = file.content;
+    return data;
   });
 }
-function getDefaults(filePath) {
-  // Must have src/ in the path so we know when to stop:
-  var dirPath=path.join(src, path.dirname(filePath));
-  var arr=[load(dirPath)];
-  recurse(dirPath);
-  return Promise.all(arr)
-  .then(function (arr) {
-    // Combine defaults:
-    return _.spread(_.defaultsDeep)(arr);
-  });
-  function recurse(dirPath) {
-    // If we have reached src/, stop:
-    if (path.normalizeTrim(dirPath) === path.normalizeTrim(src)) return;
-    else {
-      let newPath=path.dirname(dirPath);
-      arr.push(load(newPath));
-      return recurse(newPath);
-    }
-  }
-  function load(dirPath) {
-    return globby(path.join(dirPath, '_defaults.*')).then(function (res) {
-      var defaults={};
-      if (!res[0]) return defaults;
-      // We are in a promise chain, so don't worry about errors:
-      switch (path.extname(res[0])) {
-      case '.yaml':
-      case '.yml':
-        defaults=yaml.safeLoad(fs.readFileSync(res[0], 'utf8'));
-        break;
-      case '.json':
-        defaults=fs.readJsonSync(res[0]);
-      }
-      return defaults;
-    });
-  }
-}
+
+// Accepts data object, path extname
+// Returns Promise(data object)
 function middleware(data, ext) {
   // Check path's ext:
   switch (ext) {
@@ -128,20 +100,25 @@ function middleware(data, ext) {
     });
   }
 }
-// Accepts filename
-// Returns Promise(data object)
-function loadFile(name) {
-  return p(fs.readFile)(path.join(src, name), 'utf8')
-  .then(function (text) {
-    return matter(text);
-  })
-  .then(function (file) {
-    var data = file.data;
-    data._body = file.content;
-    return data;
+
+// Accepts data object
+// Returns Promise(html string)
+function render(data) {
+  return globby(path.join(layouts, data._layout)+'.*')
+  .then(function (arr) {
+    var layout = arr[0];
+    // Globby doesn't throw an error if the layout path doesn't exist, so we do:
+    if (!layout) throw new Error(`The layout: ${data._layout} cannot be found in ${layouts}`);
+    // Render with consolidate.js:
+    return p(cons[engine])(layout, data);
   });
 }
 
+// Validates configuration,
+// Sets module-wide config vars,
+// Calls setConf on helper modules
+// Accepts engine, dirs
+// Returns a promise
 function setConf(eng, dirs) {
   var access = p(fs.access);
   // Check that src & layouts exists:
@@ -162,5 +139,7 @@ function setConf(eng, dirs) {
     dist=dirs.dist;
     layouts=dirs.layouts;
     engine=eng;
+    // setConf in helper modules:
+    getDefaults.setConf(dirs);
   });
 }
