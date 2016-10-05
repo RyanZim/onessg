@@ -6,7 +6,6 @@ var globby = require('globby');
 var matter = require('gray-matter');
 var cons = require('consolidate');
 var marked = p(require('marked'));
-var _ = require('lodash');
 // Local Modules:
 var getDefaults = require('./lib/getDefaults.js');
 // Config vars:
@@ -45,12 +44,7 @@ function processFile(filePath) {
     return middleware(data, path.extname(filePath));
   })
   .then(function (data) {
-    return getDefaults(filePath)
-    .then(function (defaults) {
-      // Mutate data & set cache: true :
-      _.defaultsDeep(data, defaults, {cache: true});
-      return data;
-    });
+    return getDefaults(data, filePath);
   })
   .then(function (data) {
     // If _layout, render it:
