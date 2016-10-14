@@ -1,3 +1,4 @@
+/* eslint no-console: "off" */
 'use strict';
 var fs=require('fs-extra');
 var path=require('path-extra');
@@ -5,23 +6,45 @@ var assert=require('assert');
 var suppose=require('suppose');
 var resolve=require('autoresolve');
 var onessg=require(resolve('index.js'));
-assert.file=function (fileName) {
-  // path-extra:
-  fileName=path.replaceExt(fileName, '.html');
-  var expected=fs.readFileSync(path.join('test/expected', fileName), 'utf8');
-  var actual=fs.readFileSync(path.join('test/dist', fileName), 'utf8');
-  assert.equal(actual, expected);
+assert.dirsEqual = require('assert-dir-equal');
+assert.fixture=function (fixture, done) {
+  // Get layoutPath:
+  var layoutPath=path.join('test/fixtures/', fixture, 'layouts');
+  try {
+    fs.accessSync(layoutPath);
+  } catch (e) {
+    // Use a dummy directory if there isn't a local one:
+    layoutPath='test/fixtures/empty-dir';
+  }
+  var distPath=path.join('test/fixtures/', fixture, 'dist');
+  // Clean dist:
+  fs.removeSync(distPath);
+  // Run onessg:
+  onessg('ejs', {
+    src: path.join('test/fixtures/', fixture, 'src'),
+    dist: distPath,
+    layouts: layoutPath,
+  }, function () {
+    // Assert that dist/ & expected/ are equal:
+    try {
+      assert.dirsEqual(path.join('test/fixtures/', fixture, 'dist'), path.join('test/fixtures/', fixture, 'expected'));
+    } catch (e) {
+      return done(e);
+    }
+    done();
+  });
 };
-// Clean dist:
-// fs-extra:
-fs.removeSync('test/dist/');
+
 suite('cli', function () {
   this.timeout(5000);
   this.slow(3000);
   test('works', function (done) {
-    // NOTE: This also builds the files for the unit tests below!
-    suppose(resolve('cli.js'), ['ejs', '-s', 'test/src', '-d', 'test/dist', '-l', 'test/layouts'])
+    suppose(resolve('cli.js'), ['ejs',
+    '-s', 'test/fixtures/cli/src',
+    '-d', 'test/fixtures/cli/dist',
+    '-l', 'test/fixtures/cli/layouts'])
     .on('error', function (err) {
+      console.error(err);
       done(err);
     })
     .end(function (code) {
@@ -45,76 +68,50 @@ suite('cli', function () {
   });
 });
 // Tests:
-suite('plain html', function () {
-  test('empty file', function () {
-    assert.file('empty.html');
+suite('html & markdown', function () {
+  test('empty files', function (done) {
+    assert.fixture('empty-files', done);
   });
-  test('text', function () {
-    assert.file('text.html');
+  test('text', function (done) {
+    assert.fixture('text', done);
   });
-});
-suite('markdown', function () {
-  test('empty file', function () {
-    assert.file('empty-md.md');
-  });
-  test('text', function () {
-    assert.file('text-md.md');
-  });
-  test('advanced markdown', function () {
-    assert.file('markdown.md');
-  });
-  test('.markdown extention', function () {
-    assert.file('text-markdown.markdown');
+  test('subfolders', function (done) {
+    assert.fixture('subfolders', done);
   });
 });
 suite('layouts & front-matter', function () {
-  test('basic layout', function () {
-    assert.file('layout.html');
-  });
-  test('locals', function () {
-    assert.file('locals.html');
-  });
-  test('json front-matter', function () {
-    assert.file('json-fm.html');
-  });
-});
-suite('subfolders', function () {
-  test('file with text', function () {
-    assert.file('subfolder/text.html');
-  });
-  test('file with locals', function () {
-    assert.file('subfolder/locals.html');
+  test('works', function (done) {
+    assert.fixture('layouts', done);
   });
 });
 suite('_defaults file', function () {
-  test('sets defaults for locals', function () {
-    assert.file('no-author.html');
+  test('works', function (done) {
+    assert.fixture('_defaults', done);
   });
-  test('defaults are overridable in front-matter', function () {
-    assert.file('author.html');
+  test('can set default _layout', function (done) {
+    assert.fixture('default-layout', done);
   });
-  test('can set default _layout', function () {
-    assert.file('default-layout/text.html');
+  test('works in subfolders', function (done) {
+    assert.fixture('_defaults-subfolders', done);
   });
-  test('files in subfolders inherit defaults', function () {
-    assert.file('subfolder/no-author-no-editor.html');
+});
+suite('file types/extentions', function () {
+  test('json', function (done) {
+    assert.fixture('json', done);
   });
-  test('_defaults file in subfolder overrides root _defaults', function () {
-    assert.file('overrides/no-author-no-editor.html');
+  test('yml', function (done) {
+    assert.fixture('yml', done);
   });
-  test('works in nested subfolders', function () {
-    assert.file('nested/folder/no-author-no-editor.html');
-  });
-  test('_defaults.json works', function () {
-    assert.file('json/no-author.html');
+  test('markdown', function (done) {
+    assert.fixture('markdown', done);
   });
 });
 suite('errors', function () {
   var dirs={};
   setup(function () {
-    dirs.src='test/src';
-    dirs.dist='test/dist';
-    dirs.layouts='test/layouts';
+    dirs.src='test/fixtures/cli/src';
+    dirs.dist='test/fixtures/cli/dist';
+    dirs.layouts='test/fixtures/cli/layouts';
   });
   test('invalid src/', function (done) {
     dirs.src='noop';

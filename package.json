@@ -40,6 +40,7 @@
     "yargs": "^6.0.0"
   },
   "devDependencies": {
+    "assert-dir-equal": "^1.0.1",
     "autoresolve": "0.0.3",
     "doctoc": "^1.2.0",
     "ejs": "^2.5.1",
