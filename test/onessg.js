@@ -125,6 +125,15 @@ suite('errors', function () {
       done(assert(e));
     });
   });
+  test('non-existent layout', function (done) {
+    onessg('ejs', {
+      src: 'test/fixtures/non-existent-layout/src',
+      dist: 'test/fixtures/non-existent-layout/dist',
+      layouts: 'test/fixtures/non-existent-layout/layouts',
+    }, function (e) {
+      done(assert(e));
+    });
+  });
   test('invalid type for engine', function (done) {
     onessg(0, dirs, function (e) {
       done(assert(e));
