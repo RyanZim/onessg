@@ -32,7 +32,7 @@ _layout: "page"
 Hello World!
 ```
 
-Notice the underscore before `layout`. _Anything prefixed with an underscore is reserved word for onessg._ All keys in the front-matter will be passed as a local to your templates.
+Notice the underscore before `layout`. _Anything prefixed with an underscore is reserved word for onessg._ See the [full list of underscore keys](underscore-reference.md). All keys in the front-matter will be passed as a local to your templates.
 
 You can set defaults for your front-matter in `_defaults.yaml` (`_defaults.json` works too!). These defaults can be overridden in your front-matter. `_defaults.yaml` is also the place to set options for your template engine.
 
@@ -190,3 +190,7 @@ A few things to note:
 - The `rmWhitespace` option from `src/_defaults.yaml` is also in effect.
 
 **Hooray!** You are now a certified onessg user! :mortar_board:
+
+## Further Reading
+
+- [Underscore Reference](underscore-reference.md) - A reference to all the underscore-prefixed values in onessg.

@@ -62,7 +62,7 @@ Hello World!
 
 The front-matter (the part between the `---` lines) is written in YAML ([other languages](https://github.com/jonschlinkert/gray-matter#optionslang) are supported as well). All keys in the front-matter will be passed as locals to your templates.
 
-Notice the underscore before `layout`. _Anything prefixed with an underscore is reserved word for onessg._
+Notice the underscore before `layout`. _Anything prefixed with an underscore is reserved word for onessg._ See the [full list of underscore keys](docs/underscore-reference.md).
 
 ---
 
