@@ -171,11 +171,7 @@ https://github.com/tj/consolidate.js/#supported-template-engines.
 
 ## Contributing
 
-Contributions welcome; please discuss before making significant changes. All new features should be tested. Run `npm test` to run the tests. You can generate a code coverage report by running `npm run coverage`. The report will be found at `coverage/lcov-report/index.html`.
-
-If you make changes to the headings in `README.md`, please run `npm run toc` to update the table of contents.
-
-For bugs :beetle:, feature requests :bulb:, and questions :speech_balloon:, please file an issue!
+Contributions welcome; please read the [Contributing Guidelines](CONTRIBUTING.md) for more info.
 
 Check the [Roadmap](https://github.com/RyanZim/onessg/wiki/Roadmap) to see what's on the horizon.
 
