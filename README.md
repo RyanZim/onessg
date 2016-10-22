@@ -151,13 +151,14 @@ For further reading, see the [Tutorial](docs/tutorial.md).
 ## CLI Usage & Options
 
 ```
-onessg <template_engine>
-onessg <template_engine> [-s <source_dir>] [-d <output_dir>] [-l <layout_dir>]
+onessg <template_engine> [--dev]
+onessg <template_engine> [-s <source_dir>] [-d <output_dir>] [-l <layout_dir>] [--dev]
 
 Options:
   -s, --src      Set the src directory                [string] [default: "src/"]
   -d, --dist     Set the dist directory              [string] [default: "dist/"]
   -l, --layouts  Set the layouts directory        [string] [default: "layouts/"]
+  --dev          Dev Mode, compiles drafts along with normal files     [boolean]
   --help         Show help                                             [boolean]
   --version      Show version number                                   [boolean]
 

@@ -13,9 +13,10 @@ var engine;
 var src;
 var layouts;
 var dist;
-module.exports = function (engine, dirs, cb) {
+var devMode;
+module.exports = function (engine, conf, cb) {
   // Make engine and dirs available globally:
-  setConf(engine, dirs)
+  setConf(engine, conf)
   .then(function () {
     // Get files:
     return globby('**/*.@(html|md|markdown)', {nodir: true, cwd: src});
@@ -40,23 +41,25 @@ function processFile(filePath) {
   // Load file and convert to a data object:
   return loadFile(filePath)
   .then(function (data) {
-    // Run through middleware:
-    return middleware(data, path.extname(filePath));
-  })
-  .then(function (data) {
-    return getDefaults(data, filePath);
-  })
-  .then(function (data) {
-    // If _layout, render it:
-    if (data._layout) return render(data, filePath);
-    // Else, return _body:
-    else return data._body;
-  })
-  .then(function (html) {
-    // Get path to write to using path-extra:
-    var writePath=path.replaceExt(path.join(dist, filePath), '.html');
-    // Output using fs-extra:
-    return p(fs.outputFile)(writePath, html);
+    // If it's a draft and devMode is off, return undefined:
+    if (data._draft && !devMode) return undefined;
+    // Else, run through middleware:
+    return middleware(data, path.extname(filePath))
+    .then(function (data) {
+      return getDefaults(data, filePath);
+    })
+    .then(function (data) {
+      // If _layout, render it:
+      if (data._layout) return render(data, filePath);
+      // Else, return _body:
+      else return data._body;
+    })
+    .then(function (html) {
+      // Get path to write to using path-extra:
+      var writePath=path.replaceExt(path.join(dist, filePath), '.html');
+      // Output using fs-extra:
+      return p(fs.outputFile)(writePath, html);
+    });
   });
 }
 // HELPER FUNCTIONS
@@ -113,12 +116,12 @@ function render(data) {
 // Calls setConf on helper modules
 // Accepts engine, dirs
 // Returns a promise
-function setConf(eng, dirs) {
+function setConf(eng, conf) {
   var access = p(fs.access);
   // Check that src & layouts exists:
   return Promise.all([
-    access(dirs.src),
-    access(dirs.layouts),
+    access(conf.src),
+    access(conf.layouts),
     new Promise(function (resolve) {
       // Check that engine is a string:
       if (typeof eng !== 'string' || eng === '') throw new Error('Please pass a valid engine parameter');
@@ -129,11 +132,12 @@ function setConf(eng, dirs) {
   ])
   .then(function () {
     // Set vars:
-    src=dirs.src;
-    dist=dirs.dist;
-    layouts=dirs.layouts;
+    src=conf.src;
+    dist=conf.dist;
+    layouts=conf.layouts;
     engine=eng;
+    devMode=conf.devMode;
     // setConf in helper modules:
-    getDefaults.setConf(dirs);
+    getDefaults.setConf(conf);
   });
 }

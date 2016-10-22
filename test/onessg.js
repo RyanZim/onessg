@@ -7,7 +7,7 @@ var suppose=require('suppose');
 var resolve=require('autoresolve');
 var onessg=require(resolve('index.js'));
 assert.dirsEqual = require('assert-dir-equal');
-assert.fixture=function (fixture, done) {
+assert.fixture=function (fixture, done, devMode) {
   // Get layoutPath:
   var layoutPath=path.join('test/fixtures/', fixture, 'layouts');
   try {
@@ -24,6 +24,7 @@ assert.fixture=function (fixture, done) {
     src: path.join('test/fixtures/', fixture, 'src'),
     dist: distPath,
     layouts: layoutPath,
+    devMode: devMode,
   }, function () {
     // Assert that dist/ & expected/ are equal:
     try {
@@ -70,6 +71,51 @@ suite('cli', function () {
       done();
     });
   });
+  test('--dev works', function (done) {
+    // Clean dist:
+    fs.removeSync('test/fixtures/dev-mode/dist');
+    suppose(resolve('cli.js'), ['ejs',
+    '--dev',
+    '-s', 'test/fixtures/dev-mode/src',
+    '-d', 'test/fixtures/dev-mode/dist',
+    '-l', 'test/fixtures/empty-dir'])
+    .on('error', function (err) {
+      console.error(err);
+      done(err);
+    })
+    .end(function () {
+      // Assert Normal file was compiled:
+      assert.equal(
+        fs.readFileSync('test/fixtures/dev-mode/expected/text.html', 'utf8'),
+        fs.readFileSync('test/fixtures/dev-mode/dist/text.html', 'utf8')
+      );
+      // Assert Draft was compiled:
+      assert.equal(
+        fs.readFileSync('test/fixtures/dev-mode/expected/draft.html', 'utf8'),
+        fs.readFileSync('test/fixtures/dev-mode/dist/draft.html', 'utf8')
+      );
+      done();
+    });
+  });
+  test('--dev is not on by default', function (done) {
+    // Clean dist:
+    fs.removeSync('test/fixtures/drafts/dist');
+    suppose(resolve('cli.js'), ['ejs',
+    '-s', 'test/fixtures/drafts/src',
+    '-d', 'test/fixtures/drafts/dist',
+    '-l', 'test/fixtures/empty-dir'])
+    .on('error', function (err) {
+      console.error(err);
+      done(err);
+    })
+    .end(function () {
+      // Assert draft.html does not exist:
+      assert.throws(function () {
+        fs.accessSync('test/fixtures/drafts/dist/draft.html');
+      }, 'draft.html exists');
+      done();
+    });
+  });
 });
 // Tests:
 suite('html & markdown', function () {
@@ -97,6 +143,14 @@ suite('_defaults file', function () {
   });
   test('works in subfolders', function (done) {
     assert.fixture('_defaults-subfolders', done);
+  });
+});
+suite('drafts', function () {
+  test('are not compiled by default', function (done) {
+    assert.fixture('drafts', done);
+  });
+  test('are compiled in dev mode', function (done) {
+    assert.fixture('dev-mode', done, true);
   });
 });
 suite('file types/extentions', function () {
