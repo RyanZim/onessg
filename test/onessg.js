@@ -39,6 +39,7 @@ suite('cli', function () {
   this.timeout(5000);
   this.slow(3000);
   test('works', function (done) {
+    fs.removeSync('test/fixtures/cli/dist');
     suppose(resolve('cli.js'), ['ejs',
     '-s', 'test/fixtures/cli/src',
     '-d', 'test/fixtures/cli/dist',
@@ -48,6 +49,7 @@ suite('cli', function () {
       done(err);
     })
     .end(function (code) {
+      assert.dirsEqual('test/fixtures/cli/dist', 'test/fixtures/cli/expected');
       assert.equal(code, 0, 'CLI exited with non-zero exit code');
       done();
     });
