@@ -21,7 +21,7 @@ We also believe in setting useful, but overridable defaults. Because of this, on
 
 - [Installation](#installation)
 - [Example](#example)
-- [CLI Usage & Options](#cli-usage-&-options)
+- [CLI Usage & Options](#cli-usage--options)
 - [Contributing](#contributing)
 - [License](#license)
 
