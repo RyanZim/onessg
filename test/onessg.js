@@ -40,10 +40,12 @@ suite('cli', function () {
   this.slow(3000);
   test('works', function (done) {
     fs.removeSync('test/fixtures/cli/dist');
-    suppose(resolve('cli.js'), ['ejs',
-    '-s', 'test/fixtures/cli/src',
-    '-d', 'test/fixtures/cli/dist',
-    '-l', 'test/fixtures/cli/layouts'])
+    suppose(resolve('cli.js'), [
+      'ejs',
+      '-s', 'test/fixtures/cli/src',
+      '-d', 'test/fixtures/cli/dist',
+      '-l', 'test/fixtures/cli/layouts',
+    ])
     .on('error', function (err) {
       console.error(err);
       done(err);
