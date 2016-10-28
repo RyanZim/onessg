@@ -74,11 +74,13 @@ suite('cli', function () {
   test('--dev works', function (done) {
     // Clean dist:
     fs.removeSync('test/fixtures/dev-mode/dist');
-    suppose(resolve('cli.js'), ['ejs',
-    '--dev',
-    '-s', 'test/fixtures/dev-mode/src',
-    '-d', 'test/fixtures/dev-mode/dist',
-    '-l', 'test/fixtures/empty-dir'])
+    suppose(resolve('cli.js'), [
+      'ejs',
+      '--dev',
+      '-s', 'test/fixtures/dev-mode/src',
+      '-d', 'test/fixtures/dev-mode/dist',
+      '-l', 'test/fixtures/empty-dir',
+    ])
     .on('error', function (err) {
       console.error(err);
       done(err);
@@ -100,10 +102,12 @@ suite('cli', function () {
   test('--dev is not on by default', function (done) {
     // Clean dist:
     fs.removeSync('test/fixtures/drafts/dist');
-    suppose(resolve('cli.js'), ['ejs',
-    '-s', 'test/fixtures/drafts/src',
-    '-d', 'test/fixtures/drafts/dist',
-    '-l', 'test/fixtures/empty-dir'])
+    suppose(resolve('cli.js'), [
+      'ejs',
+      '-s', 'test/fixtures/drafts/src',
+      '-d', 'test/fixtures/drafts/dist',
+      '-l', 'test/fixtures/empty-dir',
+    ])
     .on('error', function (err) {
       console.error(err);
       done(err);
