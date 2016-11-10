@@ -1,6 +1,7 @@
 # onessg
 
 [![Travis](https://img.shields.io/travis/RyanZim/onessg.svg?maxAge=2592000)](https://travis-ci.org/RyanZim/onessg)
+[![Coveralls branch](https://img.shields.io/coveralls/RyanZim/onessg/master.svg)](https://coveralls.io/github/RyanZim/onessg)
 [![npm](https://img.shields.io/npm/v/onessg.svg?maxAge=2592000)](https://www.npmjs.com/package/onessg)
 [![npm](https://img.shields.io/npm/l/onessg.svg?maxAge=2592000)](https://github.com/RyanZim/onessg/blob/master/LICENSE)
 

@@ -11,7 +11,8 @@
     "coverage": "npm run mocha && nyc report --reporter lcov",
     "toc": "doctoc README.md",
     "mocha": "nyc mocha --ui tdd",
-    "lint": "eslint --ignore-path .gitignore '**/*.js'"
+    "lint": "eslint --ignore-path .gitignore '**/*.js'",
+    "coveralls": "nyc report --reporter=text-lcov | coveralls"
   },
   "keywords": [
     "Static Site Generator",
@@ -41,6 +42,7 @@
   "devDependencies": {
     "assert-dir-equal": "^1.0.1",
     "autoresolve": "0.0.3",
+    "coveralls": "^2.11.14",
     "doctoc": "^1.2.0",
     "ejs": "^2.5.1",
     "eslint": "~3.9.0",
