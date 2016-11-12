@@ -56,7 +56,7 @@ function processFile(filePath) {
     })
     .then(function (html) {
       // Get path to write to using path-extra:
-      var writePath=path.replaceExt(path.join(dist, filePath), '.html');
+      var writePath = path.replaceExt(path.join(dist, filePath), '.html');
       // Output using fs-extra:
       return p(fs.outputFile)(writePath, html);
     });
@@ -101,7 +101,7 @@ function middleware(data, ext) {
 // Accepts data object
 // Returns Promise(html string)
 function render(data) {
-  return globby(path.join(layouts, data._layout)+'.*')
+  return globby(path.join(layouts, data._layout) + '.*')
   .then(function (arr) {
     var layout = arr[0];
     // Globby doesn't throw an error if the layout path doesn't exist, so we do:
@@ -132,11 +132,11 @@ function setConf(eng, conf) {
   ])
   .then(function () {
     // Set vars:
-    src=conf.src;
-    dist=conf.dist;
-    layouts=conf.layouts;
-    engine=eng;
-    devMode=conf.devMode;
+    src = conf.src;
+    dist = conf.dist;
+    layouts = conf.layouts;
+    engine = eng;
+    devMode = conf.devMode;
     // setConf in helper modules:
     getDefaults.setConf(conf);
   });

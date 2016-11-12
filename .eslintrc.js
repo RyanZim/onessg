@@ -21,6 +21,7 @@ module.exports = {
         "curly": ["error", "multi"],
         "brace-style": ["error", "1tbs"],
         // Spacing:
+        "space-infix-ops": "error",
         "array-bracket-spacing": ["error", "never"],
         "computed-property-spacing": ["error", "never"],
         "func-call-spacing": ["error", "never"],

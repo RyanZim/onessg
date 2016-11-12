@@ -1,22 +1,22 @@
 /* eslint no-console: "off" */
 'use strict';
-var fs=require('fs-extra');
-var path=require('path-extra');
-var assert=require('assert');
-var suppose=require('suppose');
-var resolve=require('autoresolve');
-var onessg=require(resolve('index.js'));
+var fs = require('fs-extra');
+var path = require('path-extra');
+var assert = require('assert');
+var suppose = require('suppose');
+var resolve = require('autoresolve');
+var onessg = require(resolve('index.js'));
 assert.dirsEqual = require('assert-dir-equal');
-assert.fixture=function (fixture, done, devMode) {
+assert.fixture = function (fixture, done, devMode) {
   // Get layoutPath:
-  var layoutPath=path.join('test/fixtures/', fixture, 'layouts');
+  var layoutPath = path.join('test/fixtures/', fixture, 'layouts');
   try {
     fs.accessSync(layoutPath);
   } catch (e) {
     // Use a dummy directory if there isn't a local one:
-    layoutPath='test/fixtures/empty-dir';
+    layoutPath = 'test/fixtures/empty-dir';
   }
-  var distPath=path.join('test/fixtures/', fixture, 'dist');
+  var distPath = path.join('test/fixtures/', fixture, 'dist');
   // Clean dist:
   fs.removeSync(distPath);
   // Run onessg:
@@ -62,7 +62,7 @@ suite('cli', function () {
     // Run cli.js ejs -s noop:
     suppose(resolve('cli.js'), ['ejs', '-s', 'noop'])
     .on('error', function (err) {
-      error=err;
+      error = err;
     })
     .end(function (code) {
       assert.notEqual(code, 0, 'expected CLI to return non-zero exit code on error');
@@ -169,20 +169,20 @@ suite('file types/extentions', function () {
   });
 });
 suite('errors', function () {
-  var dirs={};
+  var dirs = {};
   setup(function () {
-    dirs.src='test/fixtures/cli/src';
-    dirs.dist='test/fixtures/cli/dist';
-    dirs.layouts='test/fixtures/cli/layouts';
+    dirs.src = 'test/fixtures/cli/src';
+    dirs.dist = 'test/fixtures/cli/dist';
+    dirs.layouts = 'test/fixtures/cli/layouts';
   });
   test('invalid src/', function (done) {
-    dirs.src='noop';
+    dirs.src = 'noop';
     onessg('ejs', dirs, function (e) {
       done(assert(e));
     });
   });
   test('invalid layouts/', function (done) {
-    dirs.layouts='noop';
+    dirs.layouts = 'noop';
     onessg('ejs', dirs, function (e) {
       done(assert(e));
     });

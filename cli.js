@@ -30,7 +30,7 @@ $0 ejs -s posts/ -d output/ -l templates/`)
 .epilog('A list of supported template engines may be found at: https://github.com/tj/consolidate.js/#supported-template-engines.')
 .argv;
 var onessg = require('./index.js');
-var conf={
+var conf = {
   src: argv.s,
   dist: argv.d,
   layouts: argv.l,
