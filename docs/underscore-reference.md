@@ -14,3 +14,4 @@ These are the keys you can set in your front-matter or `_defaults.yaml`.
 These keys are set automatically by onessg and exposed to you templates as locals. Of course, you can access the keys you set in your templates as well.
 
 - `_body` This is the main contents of the file (the part outside the front-matter).
+- `_path` This is the path of the HTML or Markdown file, relative to `src/`. Note that extensions are preserved, i.e. `index.md` is a possible value.

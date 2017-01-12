@@ -25,7 +25,8 @@ assert.fixture = function (fixture, done, devMode) {
     dist: distPath,
     layouts: layoutPath,
     devMode: devMode,
-  }, function () {
+  }, function (err) {
+    if (err) return done(err);
     // Assert that dist/ & expected/ are equal:
     try {
       assert.dirsEqual(path.join('test/fixtures/', fixture, 'dist'), path.join('test/fixtures/', fixture, 'expected'));
@@ -136,6 +137,9 @@ suite('html & markdown', function () {
 suite('layouts & front-matter', function () {
   test('works', function (done) {
     assert.fixture('layouts', done);
+  });
+  test('_path is set automatically', function (done) {
+    assert.fixture('_path', done);
   });
 });
 suite('_defaults file', function () {

@@ -74,6 +74,7 @@ function loadFile(name) {
   .then(function (file) {
     var data = file.data;
     data._body = file.content;
+    data._path = name;
     return data;
   });
 }
