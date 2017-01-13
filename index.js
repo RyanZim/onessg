@@ -49,13 +49,11 @@ function processFile(filePath) {
     // If it's a draft and devMode is off, return undefined:
     if (data._draft && !devMode) return undefined;
     // Else, run through middleware:
-    return middleware(data, path.extname(filePath))
-    .then(function (data) {
-      return getDefaults(data, filePath);
-    })
+    return middleware(data)
+    .then(getDefaults)
     .then(function (data) {
       // If _layout, render it:
-      if (data._layout) return render(data, filePath);
+      if (data._layout) return render(data);
       // Else, return _body:
       else return data._body;
     })
@@ -86,9 +84,9 @@ function loadFile(name) {
 
 // Accepts data object, path extname
 // Returns Promise(data object)
-function middleware(data, ext) {
+function middleware(data) {
   // Check path's ext:
-  switch (ext) {
+  switch (path.extname(data._path)) {
   case '.html':
     // noop:
     return Promise.resolve(data);
