@@ -1,6 +1,11 @@
 'use strict';
 var p = require('thenify');
 var fs = require('fs-extra');
+var pfs = {
+  access: p(fs.access),
+  outputFile: p(fs.outputFile),
+  readFile: p(fs.readFile),
+};
 var path = require('path-extra');
 var globby = require('globby');
 var matter = require('gray-matter');
@@ -58,7 +63,7 @@ function processFile(filePath) {
       // Get path to write to using path-extra:
       var writePath = path.replaceExt(path.join(dist, filePath), '.html');
       // Output using fs-extra:
-      return p(fs.outputFile)(writePath, html);
+      return pfs.outputFile(writePath, html);
     });
   });
 }
@@ -67,7 +72,7 @@ function processFile(filePath) {
 // Accepts filename
 // Returns Promise(data object)
 function loadFile(name) {
-  return p(fs.readFile)(path.join(src, name), 'utf8')
+  return pfs.readFile(path.join(src, name), 'utf8')
   .then(function (text) {
     return matter(text);
   })
@@ -108,7 +113,7 @@ function render(data) {
     // Globby doesn't throw an error if the layout path doesn't exist, so we do:
     if (!layout) throw new Error(`The layout: ${data._layout} cannot be found in ${layouts}`);
     // Render with consolidate.js:
-    return p(cons[engine])(layout, data);
+    return engine(layout, data);
   });
 }
 
@@ -118,11 +123,10 @@ function render(data) {
 // Accepts engine, dirs
 // Returns a promise
 function setConf(eng, conf) {
-  var access = p(fs.access);
   // Check that src & layouts exists:
   return Promise.all([
-    access(conf.src),
-    access(conf.layouts),
+    pfs.access(conf.src),
+    pfs.access(conf.layouts),
     new Promise(function (resolve) {
       // Check that engine is a string:
       if (typeof eng !== 'string' || eng === '') throw new Error('Please pass a valid engine parameter');
@@ -136,7 +140,7 @@ function setConf(eng, conf) {
     src = conf.src;
     dist = conf.dist;
     layouts = conf.layouts;
-    engine = eng;
+    engine = p(cons[eng]);
     devMode = conf.devMode;
     // setConf in helper modules:
     getDefaults.setConf(conf);
