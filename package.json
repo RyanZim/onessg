@@ -37,7 +37,7 @@
     "marked": "^0.3.6",
     "path-extra": "^4.0.0",
     "thenify": "^3.2.0",
-    "yargs": "^6.0.0"
+    "yargs": "^7.0.1"
   },
   "devDependencies": {
     "assert-dir-equal": "^1.0.1",
