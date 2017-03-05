@@ -159,7 +159,6 @@ Options:
   -s, --src      Set the src directory                [string] [default: "src/"]
   -d, --dist     Set the dist directory              [string] [default: "dist/"]
   -l, --layouts  Set the layouts directory        [string] [default: "layouts/"]
-  --dev          Dev Mode, compiles drafts along with normal files     [boolean]
   --help         Show help                                             [boolean]
   --version      Show version number                                   [boolean]
 

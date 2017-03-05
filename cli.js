@@ -2,8 +2,8 @@
 /* eslint no-console: "off" */
 'use strict';
 var argv = require('yargs')
-.usage(`$0 <template_engine> [--dev]
-$0 <template_engine> [-s <source_dir>] [-d <output_dir>] [-l <layout_dir>] [--dev]`)
+.usage(`$0 <template_engine>
+$0 <template_engine> [-s <source_dir>] [-d <output_dir>] [-l <layout_dir>]`)
 .demand(1, 1, 'Error: You must specify an template engine')
 .alias({
   s: 'src',
@@ -11,7 +11,6 @@ $0 <template_engine> [-s <source_dir>] [-d <output_dir>] [-l <layout_dir>] [--de
   l: 'layouts',
 })
 .string(['s', 'd', 'l'])
-.boolean('dev')
 .default({
   s: 'src/',
   d: 'dist/',
@@ -21,7 +20,6 @@ $0 <template_engine> [-s <source_dir>] [-d <output_dir>] [-l <layout_dir>] [--de
   s: 'Set the src directory',
   d: 'Set the dist directory',
   l: 'Set the layouts directory',
-  dev: 'Dev Mode, compiles drafts along with normal files',
 })
 .help()
 .version()
@@ -34,7 +32,6 @@ var conf = {
   src: argv.s,
   dist: argv.d,
   layouts: argv.l,
-  devMode: argv.dev,
 };
 onessg(argv._[0], conf, function (err) {
   if (err) {

@@ -18,7 +18,6 @@ var engine;
 var src;
 var layouts;
 var dist;
-var devMode;
 module.exports = function (engine, conf, cb) {
   // Make engine and dirs available globally:
   setConf(engine, conf)
@@ -45,24 +44,19 @@ module.exports = function (engine, conf, cb) {
 function processFile(filePath) {
   // Load file and convert to a data object:
   return loadFile(filePath)
+  .then(middleware)
+  .then(getDefaults)
   .then(function (data) {
-    // If it's a draft and devMode is off, return undefined:
-    if (data._draft && !devMode) return undefined;
-    // Else, run through middleware:
-    return middleware(data)
-    .then(getDefaults)
-    .then(function (data) {
-      // If _layout, render it:
-      if (data._layout) return render(data);
-      // Else, return _body:
-      else return data._body;
-    })
-    .then(function (html) {
-      // Get path to write to using path-extra:
-      var writePath = path.replaceExt(path.join(dist, filePath), '.html');
-      // Output using fs-extra:
-      return pfs.outputFile(writePath, html);
-    });
+    // If _layout, render it:
+    if (data._layout) return render(data);
+    // Else, return _body:
+    else return data._body;
+  })
+  .then(function (html) {
+    // Get path to write to using path-extra:
+    var writePath = path.replaceExt(path.join(dist, filePath), '.html');
+    // Output using fs-extra:
+    return pfs.outputFile(writePath, html);
   });
 }
 // HELPER FUNCTIONS
@@ -139,7 +133,6 @@ function setConf(eng, conf) {
     dist = conf.dist;
     layouts = conf.layouts;
     engine = p(cons[eng]);
-    devMode = conf.devMode;
     // setConf in helper modules:
     getDefaults.setConf(conf);
   });
