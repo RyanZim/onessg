@@ -11,7 +11,7 @@
     "coverage": "npm run mocha && nyc report --reporter lcov",
     "toc": "doctoc README.md",
     "mocha": "nyc mocha --ui tdd",
-    "lint": "eslint --ignore-path .gitignore '**/*.js'",
+    "lint": "eslint --ignore-path .gitignore .",
     "coveralls": "nyc report --reporter=text-lcov | coveralls"
   },
   "keywords": [
@@ -46,6 +46,7 @@
     "doctoc": "^1.2.0",
     "ejs": "^2.5.1",
     "eslint": "~3.18.0",
+    "eslint-config-ryanzim": "0.0.2",
     "mocha": "^3.0.2",
     "nyc": "^10.0.0",
     "suppose": "^0.6.1"
