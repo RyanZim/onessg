@@ -15,13 +15,11 @@ const marked = p(require('marked'));
 const getDefaults = require('./lib/getDefaults.js');
 
 // Config vars:
-var src;
-var layouts;
-var dist;
+var conf;
 
-module.exports = function (conf) {
-  return setConf(conf)
-  .then(() => globby('**/*.@(html|md|markdown)', {nodir: true, cwd: src}))
+module.exports = function (config) {
+  return setConf(config)
+  .then(() => globby('**/*.@(html|md|markdown)', {nodir: true, cwd: conf.src}))
   .then(arr => Promise.all(arr.map(processFile)));
 };
 
@@ -40,7 +38,7 @@ function processFile(filePath) {
   })
   .then(html => {
     // Get path to write to using path-extra:
-    var writePath = path.replaceExt(path.join(dist, filePath), '.html');
+    var writePath = path.replaceExt(path.join(conf.dist, filePath), '.html');
     // Output using fs-extra:
     return pfs.outputFile(writePath, html);
   });
@@ -52,7 +50,7 @@ function processFile(filePath) {
 // Accepts filename
 // Returns Promise(data object)
 function loadFile(name) {
-  return pfs.readFile(path.join(src, name), 'utf8')
+  return pfs.readFile(path.join(conf.src, name), 'utf8')
   .then(grayMatter)
   .then(file => {
     var data = file.data;
@@ -85,11 +83,11 @@ function middleware(data) {
 // Accepts data object
 // Returns Promise(html string)
 function render(data) {
-  return globby(path.join(layouts, data._layout) + '.*')
+  return globby(path.join(conf.layouts, data._layout) + '.*')
   .then(arr => {
     var layout = arr[0];
     // Globby doesn't throw an error if the layout path doesn't exist, so we do:
-    if (!layout) throw new Error(`The layout: ${data._layout} cannot be found in ${layouts}`);
+    if (!layout) throw new Error(`The layout: ${data._layout} cannot be found in ${conf.layouts}`);
     // Render with jstransformer:
     return transformer(layout, data);
   })
@@ -99,20 +97,19 @@ function render(data) {
 // Validates configuration,
 // Sets module-wide config vars,
 // Calls setConf on helper modules
-// Accepts engine, dirs
+// Accepts config
 // Returns a promise
-function setConf(conf) {
+function setConf(config) {
   // Check that src & layouts exists:
   return Promise.all([
-    pfs.access(conf.src),
-    pfs.access(conf.layouts),
+    pfs.access(config.src),
+    pfs.access(config.layouts),
   ])
   .then(() => {
     // Set vars:
-    src = conf.src;
-    dist = conf.dist;
-    layouts = conf.layouts;
+    conf = config;
     // setConf in helper modules:
     getDefaults.setConf(conf);
+    transformer.setConf(conf);
   });
 }

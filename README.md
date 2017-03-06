@@ -161,6 +161,7 @@ Options:
   -s, --src      Set the src directory                [string] [default: "src/"]
   -d, --dist     Set the dist directory              [string] [default: "dist/"]
   -l, --layouts  Set the layouts directory        [string] [default: "layouts/"]
+  -c, --config   Set the directory that contains onessg.config.js       [string]
   --help         Show help                                             [boolean]
   --version      Show version number                                   [boolean]
 
@@ -169,6 +170,10 @@ Examples:
   onessg -s posts/ -d output/ -l templates/
 
 ```
+
+## `onessg.config.js`
+
+To pass options to your template engine, you will need to use a config file. Read more about it [here](docs/config.md).
 
 ## Contributing
 

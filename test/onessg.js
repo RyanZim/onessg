@@ -91,6 +91,27 @@ suite('_defaults file', function () {
   test('works in subfolders', () => assert.fixture('_defaults-subfolders'));
 });
 
+suite('onessg.config.js', function () {
+  test('sets template engine options', function (done) {
+    suppose(resolve('cli.js'), [
+      'ejs',
+      '-s', 'test/fixtures/config-options/src',
+      '-d', 'test/fixtures/config-options/dist',
+      '-l', 'test/fixtures/config-options/layouts',
+      '-c', 'test/fixtures/config-options/',
+    ])
+    .on('error', err => {
+      console.error(err);
+      done(err);
+    })
+    .end(function (code) {
+      assert.dirsEqual('test/fixtures/config-options/dist', 'test/fixtures/config-options/expected');
+      assert.equal(code, 0, 'CLI exited with non-zero exit code');
+      done();
+    });
+  });
+});
+
 suite('file types/extentions', function () {
   test('json', () => assert.fixture('json'));
   test('yml', () => assert.fixture('yml'));
