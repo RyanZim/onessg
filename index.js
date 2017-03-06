@@ -18,9 +18,9 @@ var engine;
 var src;
 var layouts;
 var dist;
-module.exports = function (engine, conf, cb) {
+module.exports = function (engine, conf) {
   // Make engine and dirs available globally:
-  setConf(engine, conf)
+  return setConf(engine, conf)
   .then(function () {
     // Get files:
     return globby('**/*.@(html|md|markdown)', {nodir: true, cwd: src});
@@ -31,12 +31,7 @@ module.exports = function (engine, conf, cb) {
     return Promise.all(arr.map(function (item) {
       return processFile(item);
     }));
-  })
-  .then(function () {
-    // Call cb:
-    cb();
-  })
-  .catch(cb);
+  });
 };
 
 // Accepts filePath

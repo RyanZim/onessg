@@ -33,9 +33,8 @@ var conf = {
   dist: argv.d,
   layouts: argv.l,
 };
-onessg(argv._[0], conf, function (err) {
-  if (err) {
-    console.error(err);
-    process.exit(1);
-  }
+onessg(argv._[0], conf)
+.catch(function (err) {
+  console.error(err);
+  process.exit(1);
 });
