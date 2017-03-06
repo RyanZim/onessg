@@ -16,7 +16,7 @@
   },
   "keywords": [
     "Static Site Generator",
-    "consolidate.js",
+    "jstransformers",
     "template engine",
     "simple",
     "layouts",
