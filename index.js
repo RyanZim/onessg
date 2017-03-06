@@ -1,37 +1,29 @@
 'use strict';
-var p = require('thenify');
-var fs = require('fs-extra');
-var pfs = {
+const p = require('thenify');
+const fs = require('fs-extra');
+const pfs = {
   access: p(fs.access),
   outputFile: p(fs.outputFile),
   readFile: p(fs.readFile),
 };
-var path = require('path-extra');
-var globby = require('globby');
-var matter = require('gray-matter');
-var cons = require('consolidate');
-var marked = p(require('marked'));
+const path = require('path-extra');
+const globby = require('globby');
+const grayMatter = require('gray-matter');
+const cons = require('consolidate');
+const marked = p(require('marked'));
 // Local Modules:
-var getDefaults = require('./lib/getDefaults.js');
+const getDefaults = require('./lib/getDefaults.js');
+
 // Config vars:
 var engine;
 var src;
 var layouts;
 var dist;
+
 module.exports = function (engine, conf) {
-  // Make engine and dirs available globally:
   return setConf(engine, conf)
-  .then(function () {
-    // Get files:
-    return globby('**/*.@(html|md|markdown)', {nodir: true, cwd: src});
-  })
-  .then(function (arr) {
-    // Process each file
-    // return a promise when all files have been processed:
-    return Promise.all(arr.map(function (item) {
-      return processFile(item);
-    }));
-  });
+  .then(() => globby('**/*.@(html|md|markdown)', {nodir: true, cwd: src}))
+  .then(arr => Promise.all(arr.map(processFile)));
 };
 
 // Accepts filePath
@@ -41,29 +33,29 @@ function processFile(filePath) {
   return loadFile(filePath)
   .then(middleware)
   .then(getDefaults)
-  .then(function (data) {
+  .then(data => {
     // If _layout, render it:
     if (data._layout) return render(data);
     // Else, return _body:
     else return data._body;
   })
-  .then(function (html) {
+  .then(html => {
     // Get path to write to using path-extra:
     var writePath = path.replaceExt(path.join(dist, filePath), '.html');
     // Output using fs-extra:
     return pfs.outputFile(writePath, html);
   });
 }
-// HELPER FUNCTIONS
+
+
+// HELPER FUNCTIONS:
 
 // Accepts filename
 // Returns Promise(data object)
 function loadFile(name) {
   return pfs.readFile(path.join(src, name), 'utf8')
-  .then(function (text) {
-    return matter(text);
-  })
-  .then(function (file) {
+  .then(grayMatter)
+  .then(file => {
     var data = file.data;
     data._body = file.content;
     data._path = name;
@@ -83,7 +75,7 @@ function middleware(data) {
   case '.markdown':
     // Render markdown:
     return marked(data._body)
-    .then(function (res) {
+    .then(res => {
       // Overwrite data._body:
       data._body = res;
       return data;
@@ -95,7 +87,7 @@ function middleware(data) {
 // Returns Promise(html string)
 function render(data) {
   return globby(path.join(layouts, data._layout) + '.*')
-  .then(function (arr) {
+  .then(arr => {
     var layout = arr[0];
     // Globby doesn't throw an error if the layout path doesn't exist, so we do:
     if (!layout) throw new Error(`The layout: ${data._layout} cannot be found in ${layouts}`);
@@ -114,7 +106,7 @@ function setConf(eng, conf) {
   return Promise.all([
     pfs.access(conf.src),
     pfs.access(conf.layouts),
-    new Promise(function (resolve) {
+    new Promise(resolve => {
       // Check that engine is a string:
       if (typeof eng !== 'string' || eng === '') throw new Error('Please pass a valid engine parameter');
       // Check that engine is supported by consolidate.js:
@@ -122,7 +114,7 @@ function setConf(eng, conf) {
       resolve();
     }),
   ])
-  .then(function () {
+  .then(() => {
     // Set vars:
     src = conf.src;
     dist = conf.dist;

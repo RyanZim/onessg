@@ -1,11 +1,13 @@
-/* eslint no-console: "off" */
 'use strict';
-var fs = require('fs-extra');
-var path = require('path-extra');
-var assert = require('assert');
-var suppose = require('suppose');
-var resolve = require('autoresolve');
-var onessg = require(resolve('index.js'));
+/* eslint no-console: "off" */
+const fs = require('fs-extra');
+const path = require('path-extra');
+const assert = require('assert');
+const suppose = require('suppose');
+const resolve = require('autoresolve');
+const onessg = require(resolve('index.js'));
+
+// Expand the assert module:
 assert.dirsEqual = require('assert-dir-equal');
 assert.fixture = function (fixture) {
   // Get layoutPath:
@@ -26,15 +28,17 @@ assert.fixture = function (fixture) {
     src: path.join('test/fixtures/', fixture, 'src'),
     dist: distPath,
     layouts: layoutPath,
-  }).then(function () {
+  })
+  .then(() => {
     // Assert that dist/ & expected/ are equal:
-    assert.dirsEqual(path.join('test/fixtures/', fixture, 'dist'), path.join('test/fixtures/', fixture, 'expected'));
+    assert.dirsEqual(distPath, path.join('test/fixtures/', fixture, 'expected'));
   });
 };
 
 suite('cli', function () {
   this.timeout(5000);
   this.slow(3000);
+
   test('works', function (done) {
     fs.removeSync('test/fixtures/cli/dist');
     suppose(resolve('cli.js'), [
@@ -43,7 +47,7 @@ suite('cli', function () {
       '-d', 'test/fixtures/cli/dist',
       '-l', 'test/fixtures/cli/layouts',
     ])
-    .on('error', function (err) {
+    .on('error', err => {
       console.error(err);
       done(err);
     })
@@ -53,6 +57,7 @@ suite('cli', function () {
       done();
     });
   });
+
   test('returns errors', function (done) {
     var error;
     // Run cli.js ejs -s noop:
@@ -68,33 +73,40 @@ suite('cli', function () {
     });
   });
 });
-// Tests:
+
 suite('html & markdown', function () {
   test('empty files', () => assert.fixture('empty-files'));
   test('text', () => assert.fixture('text'));
   test('subfolders', () => assert.fixture('subfolders'));
 });
+
 suite('layouts & front-matter', function () {
   test('works', () => assert.fixture('layouts'));
   test('_path is set automatically', () => assert.fixture('_path'));
 });
+
 suite('_defaults file', function () {
   test('works', () => assert.fixture('_defaults'));
   test('can set default _layout', () => assert.fixture('default-layout'));
   test('works in subfolders', () => assert.fixture('_defaults-subfolders'));
 });
+
 suite('file types/extentions', function () {
   test('json', () => assert.fixture('json'));
   test('yml', () => assert.fixture('yml'));
   test('markdown', () => assert.fixture('markdown'));
 });
+
 suite('errors', function () {
   var dirs = {};
-  setup(function () {
+
+  // Run before each test:
+  setup(() => {
     dirs.src = 'test/fixtures/cli/src';
     dirs.dist = 'test/fixtures/cli/dist';
     dirs.layouts = 'test/fixtures/cli/layouts';
   });
+
   test('invalid src/', function (done) {
     dirs.src = 'noop';
     onessg('ejs', dirs)
@@ -102,6 +114,7 @@ suite('errors', function () {
       done(assert(e));
     });
   });
+
   test('invalid layouts/', function (done) {
     dirs.layouts = 'noop';
     onessg('ejs', dirs)
@@ -109,6 +122,7 @@ suite('errors', function () {
       done(assert(e));
     });
   });
+
   test('non-existent layout', function (done) {
     onessg('ejs', {
       src: 'test/fixtures/non-existent-layout/src',
@@ -119,12 +133,14 @@ suite('errors', function () {
       done(assert(e));
     });
   });
+
   test('invalid type for engine', function (done) {
     onessg(0, dirs)
     .catch(e => {
       done(assert(e));
     });
   });
+
   test('unsupported engine', function (done) {
     onessg('noop', dirs)
     .catch(e => {
