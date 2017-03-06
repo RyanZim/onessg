@@ -1,6 +1,6 @@
 # onessg Tutorial
 
-Examples will use [EJS](https://github.com/mde/ejs/) as the template engine, you can use any template engine supported by [consolidate.js](https://github.com/tj/consolidate.js/).
+Examples will use [EJS](https://github.com/mde/ejs/) as the template engine, but you can use any template engine that has a [jstransformer](docs/jstransformer.md).
 
 Part 1 mostly mirrors the information found in the README, if you've already read that, you may want to skip to [Part 2](#part-2).
 
@@ -34,29 +34,28 @@ Hello World!
 
 Notice the underscore before `layout`. _Anything prefixed with an underscore is reserved word for onessg._ See the [full list of underscore keys](underscore-reference.md). All keys in the front-matter will be passed as a local to your templates.
 
-You can set defaults for your front-matter in `_defaults.yaml` (`_defaults.json` works too!). These defaults can be overridden in your front-matter. `_defaults.yaml` is also the place to set options for your template engine.
+You can set defaults for your front-matter in `_defaults.yaml` (`_defaults.json` works too!). These defaults can be overridden in your front-matter.
 
 **src/_defaults.yaml**:
 ```yaml
 title: "Hello World!" # This title will be used if none is specified
 author: "John Smith"
-rmWhitespace: true # Here we are setting an option for ejs
 ```
 
-Layouts are written in the templating language of your choice. We are using EJS here, but you can use any template engine on [this list](https://github.com/tj/consolidate.js/#supported-template-engines).
+Layouts are written in the templating language of your choice. We are using EJS here, but you can use any template engine that has a [jstransformer](docs/jstransformer.md). You can also use multiple template engines in the same project! onessg will infer the correct template engine from the file extension.
 
 **layouts/page.ejs** looks like this:
 ```html
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <title><%= title %></title>
-        <meta name="author" content="<%= author %>">
-    </head>
-    <body>
-        <%- _body -%>
-    </body>
+  <head>
+    <meta charset="utf-8">
+    <title><%= title %></title>
+    <meta name="author" content="<%= author %>">
+  </head>
+  <body>
+    <%- _body -%>
+  </body>
 </html>
 ```
 
@@ -65,10 +64,8 @@ Notice the local `_body`. This is the local for outputing the contents of each f
 **Run:**
 
 ```bash
-onessg ejs
+onessg
 ```
-
-(Substitute `ejs` with the name of your template engine)
 
 onessg will compile all the html and markdown files in `src/` (and subdirectories), and output them to `dist/` (retaining the directory structure):
 
@@ -89,20 +86,19 @@ onessg will compile all the html and markdown files in `src/` (and subdirectorie
 ```html
 <!DOCTYPE html>
 <html>
-<head>
-<meta charset="utf-8">
-<title>My first Page</title>
-<meta name="author" content="John Smith">
-</head>
-<body>
-<p>Hello World!</p>
-</body>
+  <head>
+    <meta charset="utf-8">
+    <title>My first Page</title>
+    <meta name="author" content="John Smith">
+  </head>
+  <body>
+    <p>Hello World!</p>
+  </body>
 </html>
 ```
 
 - The title (`My first Page`) comes from the front-matter.
 - The author's name (`John Smith`) comes from the `_defaults.yaml` file.
-- Leading whitespace is removed by ejs due to the `rmWhitespace` option that we set in `_defaults.yaml`.
 
 **Success!!!** :tada:
 
@@ -147,7 +143,7 @@ Note that we have omitted the front-matter. The defaults from the `_defaults` fi
 
 We will run onessg again:
 ```bash
-onessg ejs
+onessg
 ```
 
 Our directory structure is now:
@@ -172,14 +168,14 @@ Our directory structure is now:
 ```html
 <!DOCTYPE html>
 <html>
-<head>
-<meta charset="utf-8">
-<title>Hello World!</title>
-<meta name="author" content="Jane Smith">
-</head>
-<body>
-<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-</body>
+  <head>
+    <meta charset="utf-8">
+    <title>Hello World!</title>
+    <meta name="author" content="Jane Smith">
+  </head>
+  <body>
+    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+  </body>
 </html>
 ```
 
@@ -187,7 +183,6 @@ A few things to note:
 
 - The default title from `src/_defaults.yaml` has been applied.
 - The default author from `src/_defaults.yaml` has been overridden by the one in `src/subdirectory/_defaults.yaml`.
-- The `rmWhitespace` option from `src/_defaults.yaml` is also in effect.
 
 **Hooray!** You are now a certified onessg user! :mortar_board:
 

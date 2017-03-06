@@ -31,12 +31,18 @@ We also believe in setting useful, but overridable defaults. Because of this, on
 ## Installation
 
 ```bash
-npm i onessg
+npm install -D onessg
 ```
 
-You will also need to install your favorite [consolidate.js-supported template engine](https://github.com/tj/consolidate.js/#supported-template-engines).
+You will also need to install the jstransformer for your favorite template engine. For example, if you use [EJS](https://github.com/mde/ejs), you would run:
 
-**Note:** We recommend installing onessg as a devDependency (with the `-D` flag) and running it via an npm script. If you choose to install onessg globally, you will also need to install your template engine globally as well.
+```bash
+npm install -D jstransformer-ejs
+```
+
+You can read more about jstransformers [here](docs/jstransformer.md).
+
+**Note:** We recommend installing onessg as a devDependency (with the `-D` flag) and running it via an npm script. If you choose to install onessg globally, you will also need to install the jstransformer globally as well.
 
 ## Example
 
@@ -67,33 +73,32 @@ Notice the underscore before `layout`. _Anything prefixed with an underscore is 
 
 ---
 
-You can set defaults for your front-matter in `_defaults.yaml` (`_defaults.json` works too!). These defaults can be overridden in your front-matter. `_defaults.yaml` is also the place to set options for your template engine.
+You can set defaults for your front-matter in `_defaults.yaml` (`_defaults.json` works too!). These defaults can be overridden in your front-matter.
 
 **src/_defaults.yaml**:
 ```yaml
 title: "Hello World!" # This title will be used if none is specified
 author: "John Smith"
-rmWhitespace: true # Here we are setting an option for ejs
 ```
 
 If you place a `_defaults.yaml` file in a subdirectory in `src/`, settings there will only apply to files in that subdirectory and its child subdirectories.
 
 ---
 
-Layouts are written in the templating language of your choice. We are using EJS here, but you can use any template engine on [this list](https://github.com/tj/consolidate.js/#supported-template-engines).
+Layouts are written in the templating language of your choice. We are using EJS here, but you can use any template engine that has a [jstransformer](docs/jstransformer.md). You can also use multiple template engines in the same project! onessg will infer the correct template engine from the file extension.
 
 **layouts/page.ejs** looks like this:
 ```html
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <title><%= title %></title>
-        <meta name="author" content="<%= author %>">
-    </head>
-    <body>
-        <%- _body -%>
-    </body>
+  <head>
+    <meta charset="utf-8">
+    <title><%= title %></title>
+    <meta name="author" content="<%= author %>">
+  </head>
+  <body>
+    <%- _body -%>
+  </body>
 </html>
 ```
 
@@ -104,10 +109,8 @@ Notice the local `_body`. This is the local for outputing the contents of each f
 **Run:**
 
 ```bash
-onessg ejs
+onessg
 ```
-
-(Substitute `ejs` with the name of your template engine)
 
 onessg will compile all the html and markdown files in `src/` (and subdirectories), and output them to `dist/` (retaining the directory structure):
 
@@ -128,14 +131,14 @@ onessg will compile all the html and markdown files in `src/` (and subdirectorie
 ```html
 <!DOCTYPE html>
 <html>
-<head>
-<meta charset="utf-8">
-<title>My first Page</title>
-<meta name="author" content="John Smith">
-</head>
-<body>
-<p>Hello World!</p>
-</body>
+  <head>
+    <meta charset="utf-8">
+    <title>My first Page</title>
+    <meta name="author" content="John Smith">
+  </head>
+  <body>
+    <p>Hello World!</p>
+  </body>
 </html>
 ```
 
@@ -145,15 +148,14 @@ A few notes:
 
 - The title (`My first Page`) comes from the front-matter.
 - The author's name (`John Smith`) comes from the `_defaults.yaml` file.
-- Leading whitespace is removed by EJS due to the `rmWhitespace` option that we set in `_defaults.yaml`.
 
 For further reading, see the [Tutorial](docs/tutorial.md).
 
 ## CLI Usage & Options
 
 ```
-onessg <template_engine> [--dev]
-onessg <template_engine> [-s <source_dir>] [-d <output_dir>] [-l <layout_dir>] [--dev]
+onessg
+onessg [-s <source_dir>] [-d <output_dir>] [-l <layout_dir>]
 
 Options:
   -s, --src      Set the src directory                [string] [default: "src/"]
@@ -163,11 +165,9 @@ Options:
   --version      Show version number                                   [boolean]
 
 Examples:
-  onessg ejs
-  onessg ejs -s posts/ -d output/ -l templates/
+  onessg
+  onessg -s posts/ -d output/ -l templates/
 
-A list of supported template engines may be found at:
-https://github.com/tj/consolidate.js/#supported-template-engines.
 ```
 
 ## Contributing

@@ -24,7 +24,7 @@ assert.fixture = function (fixture) {
   fs.removeSync(distPath);
 
   // Run onessg:
-  return onessg('ejs', {
+  return onessg({
     src: path.join('test/fixtures/', fixture, 'src'),
     dist: distPath,
     layouts: layoutPath,
@@ -109,7 +109,7 @@ suite('errors', function () {
 
   test('invalid src/', function (done) {
     dirs.src = 'noop';
-    onessg('ejs', dirs)
+    onessg(dirs)
     .catch(e => {
       done(assert(e));
     });
@@ -117,14 +117,14 @@ suite('errors', function () {
 
   test('invalid layouts/', function (done) {
     dirs.layouts = 'noop';
-    onessg('ejs', dirs)
+    onessg(dirs)
     .catch(e => {
       done(assert(e));
     });
   });
 
   test('non-existent layout', function (done) {
-    onessg('ejs', {
+    onessg({
       src: 'test/fixtures/non-existent-layout/src',
       dist: 'test/fixtures/non-existent-layout/dist',
       layouts: 'test/fixtures/non-existent-layout/layouts',
@@ -134,15 +134,12 @@ suite('errors', function () {
     });
   });
 
-  test('invalid type for engine', function (done) {
-    onessg(0, dirs)
-    .catch(e => {
-      done(assert(e));
-    });
-  });
-
-  test('unsupported engine', function (done) {
-    onessg('noop', dirs)
+  test('jstransformer not installed', function (done) {
+    onessg({
+      src: 'test/fixtures/jstransformer-not-installed/src',
+      dist: 'test/fixtures/jstransformer-not-installed/dist',
+      layouts: 'test/fixtures/jstransformer-not-installed/layouts',
+    })
     .catch(e => {
       done(assert(e));
     });

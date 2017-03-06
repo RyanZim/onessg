@@ -9,19 +9,18 @@ const pfs = {
 const path = require('path-extra');
 const globby = require('globby');
 const grayMatter = require('gray-matter');
-const cons = require('consolidate');
+const transformer = require('./lib/transformer');
 const marked = p(require('marked'));
 // Local Modules:
 const getDefaults = require('./lib/getDefaults.js');
 
 // Config vars:
-var engine;
 var src;
 var layouts;
 var dist;
 
-module.exports = function (engine, conf) {
-  return setConf(engine, conf)
+module.exports = function (conf) {
+  return setConf(conf)
   .then(() => globby('**/*.@(html|md|markdown)', {nodir: true, cwd: src}))
   .then(arr => Promise.all(arr.map(processFile)));
 };
@@ -91,9 +90,10 @@ function render(data) {
     var layout = arr[0];
     // Globby doesn't throw an error if the layout path doesn't exist, so we do:
     if (!layout) throw new Error(`The layout: ${data._layout} cannot be found in ${layouts}`);
-    // Render with consolidate.js:
-    return engine(layout, data);
-  });
+    // Render with jstransformer:
+    return transformer(layout, data);
+  })
+  .then(obj => obj.body);
 }
 
 // Validates configuration,
@@ -101,25 +101,17 @@ function render(data) {
 // Calls setConf on helper modules
 // Accepts engine, dirs
 // Returns a promise
-function setConf(eng, conf) {
+function setConf(conf) {
   // Check that src & layouts exists:
   return Promise.all([
     pfs.access(conf.src),
     pfs.access(conf.layouts),
-    new Promise(resolve => {
-      // Check that engine is a string:
-      if (typeof eng !== 'string' || eng === '') throw new Error('Please pass a valid engine parameter');
-      // Check that engine is supported by consolidate.js:
-      if (typeof cons[eng] !== 'function') throw new Error(`${eng} is not a valid consolidate.js template engine`);
-      resolve();
-    }),
   ])
   .then(() => {
     // Set vars:
     src = conf.src;
     dist = conf.dist;
     layouts = conf.layouts;
-    engine = p(cons[eng]);
     // setConf in helper modules:
     getDefaults.setConf(conf);
   });
