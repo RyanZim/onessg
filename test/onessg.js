@@ -83,6 +83,7 @@ suite('html & markdown', function () {
 suite('layouts & front-matter', function () {
   test('works', () => assert.fixture('layouts'));
   test('_path is set automatically', () => assert.fixture('_path'));
+  test('_ext is set automatically', () => assert.fixture('_ext'));
 });
 
 suite('_defaults file', function () {

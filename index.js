@@ -55,7 +55,8 @@ function loadFile(name) {
   .then(file => {
     var data = file.data;
     data._body = file.content;
-    data._path = name;
+    data._path = path.removeExt(name);
+    data._ext = path.extname(name);
     return data;
   });
 }
@@ -64,7 +65,7 @@ function loadFile(name) {
 // Returns Promise(data object)
 function middleware(data) {
   // Check path's ext:
-  switch (path.extname(data._path)) {
+  switch (data._ext) {
   case '.html':
     // noop:
     return Promise.resolve(data);
