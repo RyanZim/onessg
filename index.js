@@ -1,16 +1,10 @@
 'use strict';
-const p = require('thenify');
 const fs = require('fs-extra');
-const pfs = {
-  access: p(fs.access),
-  outputFile: p(fs.outputFile),
-  readFile: p(fs.readFile),
-};
 const path = require('path-extra');
 const globby = require('globby');
 const grayMatter = require('gray-matter');
 const transformer = require('./lib/transformer');
-const marked = p(require('marked'));
+const marked = require('universalify').fromCallback(require('marked'));
 // Local Modules:
 const getDefaults = require('./lib/getDefaults.js');
 
@@ -40,7 +34,7 @@ function processFile(filePath) {
     // Get path to write to using path-extra:
     var writePath = path.replaceExt(path.join(conf.dist, filePath), '.html');
     // Output using fs-extra:
-    return pfs.outputFile(writePath, html);
+    return fs.outputFile(writePath, html);
   });
 }
 
@@ -50,7 +44,7 @@ function processFile(filePath) {
 // Accepts filename
 // Returns Promise(data object)
 function loadFile(name) {
-  return pfs.readFile(path.join(conf.src, name), 'utf8')
+  return fs.readFile(path.join(conf.src, name), 'utf8')
   .then(grayMatter)
   .then(file => {
     var data = file.data;
@@ -103,8 +97,8 @@ function render(data) {
 function setConf(config) {
   // Check that src & layouts exists:
   return Promise.all([
-    pfs.access(config.src),
-    pfs.access(config.layouts),
+    fs.access(config.src),
+    fs.access(config.layouts),
   ])
   .then(() => {
     // Set vars:
