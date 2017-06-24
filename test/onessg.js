@@ -29,10 +29,10 @@ assert.fixture = function (fixture) {
     dist: distPath,
     layouts: layoutPath,
   })
-  .then(() => {
+    .then(() => {
     // Assert that dist/ & expected/ are equal:
-    assert.dirsEqual(distPath, path.join('test/fixtures/', fixture, 'expected'));
-  });
+      assert.dirsEqual(distPath, path.join('test/fixtures/', fixture, 'expected'));
+    });
 };
 
 suite('cli', function () {
@@ -47,30 +47,30 @@ suite('cli', function () {
       '-d', 'test/fixtures/cli/dist',
       '-l', 'test/fixtures/cli/layouts',
     ])
-    .on('error', err => {
-      console.error(err);
-      done(err);
-    })
-    .end(function (code) {
-      assert.dirsEqual('test/fixtures/cli/dist', 'test/fixtures/cli/expected');
-      assert.equal(code, 0, 'CLI exited with non-zero exit code');
-      done();
-    });
+      .on('error', err => {
+        console.error(err);
+        done(err);
+      })
+      .end(function (code) {
+        assert.dirsEqual('test/fixtures/cli/dist', 'test/fixtures/cli/expected');
+        assert.equal(code, 0, 'CLI exited with non-zero exit code');
+        done();
+      });
   });
 
   test('returns errors', function (done) {
     var error;
     // Run cli.js ejs -s noop:
     suppose(resolve('cli.js'), ['ejs', '-s', 'noop'])
-    .on('error', function (err) {
-      error = err;
-    })
-    .end(function (code) {
-      assert.notEqual(code, 0, 'expected CLI to return non-zero exit code on error');
-      // Errors:
-      assert(error, 'expected CLI to print error message');
-      done();
-    });
+      .on('error', function (err) {
+        error = err;
+      })
+      .end(function (code) {
+        assert.notEqual(code, 0, 'expected CLI to return non-zero exit code on error');
+        // Errors:
+        assert(error, 'expected CLI to print error message');
+        done();
+      });
   });
 });
 
@@ -101,15 +101,15 @@ suite('onessg.config.js', function () {
       '-l', 'test/fixtures/config-options/layouts',
       '-c', 'test/fixtures/config-options/',
     ])
-    .on('error', err => {
-      console.error(err);
-      done(err);
-    })
-    .end(function (code) {
-      assert.dirsEqual('test/fixtures/config-options/dist', 'test/fixtures/config-options/expected');
-      assert.equal(code, 0, 'CLI exited with non-zero exit code');
-      done();
-    });
+      .on('error', err => {
+        console.error(err);
+        done(err);
+      })
+      .end(function (code) {
+        assert.dirsEqual('test/fixtures/config-options/dist', 'test/fixtures/config-options/expected');
+        assert.equal(code, 0, 'CLI exited with non-zero exit code');
+        done();
+      });
   });
 });
 
@@ -132,17 +132,17 @@ suite('errors', function () {
   test('invalid src/', function (done) {
     dirs.src = 'noop';
     onessg(dirs)
-    .catch(e => {
-      done(assert(e));
-    });
+      .catch(e => {
+        done(assert(e));
+      });
   });
 
   test('invalid layouts/', function (done) {
     dirs.layouts = 'noop';
     onessg(dirs)
-    .catch(e => {
-      done(assert(e));
-    });
+      .catch(e => {
+        done(assert(e));
+      });
   });
 
   test('non-existent layout', function (done) {
@@ -151,9 +151,9 @@ suite('errors', function () {
       dist: 'test/fixtures/non-existent-layout/dist',
       layouts: 'test/fixtures/non-existent-layout/layouts',
     })
-    .catch(e => {
-      done(assert(e));
-    });
+      .catch(e => {
+        done(assert(e));
+      });
   });
 
   test('jstransformer not installed', function (done) {
@@ -162,8 +162,8 @@ suite('errors', function () {
       dist: 'test/fixtures/jstransformer-not-installed/dist',
       layouts: 'test/fixtures/jstransformer-not-installed/layouts',
     })
-    .catch(e => {
-      done(assert(e));
-    });
+      .catch(e => {
+        done(assert(e));
+      });
   });
 });
