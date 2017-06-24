@@ -13,8 +13,8 @@ var conf;
 
 module.exports = function (config) {
   return setConf(config)
-  .then(() => globby('**/*.@(html|md|markdown)', {nodir: true, cwd: conf.src}))
-  .then(arr => Promise.all(arr.map(processFile)));
+    .then(() => globby('**/*.@(html|md|markdown)', {nodir: true, cwd: conf.src}))
+    .then(arr => Promise.all(arr.map(processFile)));
 };
 
 // Accepts filePath
@@ -22,20 +22,20 @@ module.exports = function (config) {
 function processFile(filePath) {
   // Load file and convert to a data object:
   return loadFile(filePath)
-  .then(middleware)
-  .then(getDefaults)
-  .then(data => {
+    .then(middleware)
+    .then(getDefaults)
+    .then(data => {
     // If _layout, render it:
-    if (data._layout) return render(data);
-    // Else, return _body:
-    else return data._body;
-  })
-  .then(html => {
+      if (data._layout) return render(data);
+      // Else, return _body:
+      else return data._body;
+    })
+    .then(html => {
     // Get path to write to using path-extra:
-    var writePath = path.replaceExt(path.join(conf.dist, filePath), '.html');
-    // Output using fs-extra:
-    return fs.outputFile(writePath, html);
-  });
+      var writePath = path.replaceExt(path.join(conf.dist, filePath), '.html');
+      // Output using fs-extra:
+      return fs.outputFile(writePath, html);
+    });
 }
 
 
@@ -45,14 +45,14 @@ function processFile(filePath) {
 // Returns Promise(data object)
 function loadFile(name) {
   return fs.readFile(path.join(conf.src, name), 'utf8')
-  .then(grayMatter)
-  .then(file => {
-    var data = file.data;
-    data._body = file.content;
-    data._path = path.removeExt(name);
-    data._ext = path.extname(name);
-    return data;
-  });
+    .then(grayMatter)
+    .then(file => {
+      var data = file.data;
+      data._body = file.content;
+      data._path = path.removeExt(name);
+      data._ext = path.extname(name);
+      return data;
+    });
 }
 
 // Accepts data object, path extname
@@ -67,11 +67,11 @@ function middleware(data) {
   case '.markdown':
     // Render markdown:
     return marked(data._body)
-    .then(res => {
+      .then(res => {
       // Overwrite data._body:
-      data._body = res;
-      return data;
-    });
+        data._body = res;
+        return data;
+      });
   }
 }
 
@@ -79,14 +79,14 @@ function middleware(data) {
 // Returns Promise(html string)
 function render(data) {
   return globby(path.join(conf.layouts, data._layout) + '.*')
-  .then(arr => {
-    var layout = arr[0];
-    // Globby doesn't throw an error if the layout path doesn't exist, so we do:
-    if (!layout) throw new Error(`The layout: ${data._layout} cannot be found in ${conf.layouts}`);
-    // Render with jstransformer:
-    return transformer(layout, data);
-  })
-  .then(obj => obj.body);
+    .then(arr => {
+      var layout = arr[0];
+      // Globby doesn't throw an error if the layout path doesn't exist, so we do:
+      if (!layout) throw new Error(`The layout: ${data._layout} cannot be found in ${conf.layouts}`);
+      // Render with jstransformer:
+      return transformer(layout, data);
+    })
+    .then(obj => obj.body);
 }
 
 // Validates configuration,
@@ -100,11 +100,11 @@ function setConf(config) {
     fs.access(config.src),
     fs.access(config.layouts),
   ])
-  .then(() => {
+    .then(() => {
     // Set vars:
-    conf = config;
-    // setConf in helper modules:
-    getDefaults.setConf(conf);
-    transformer.setConf(conf);
-  });
+      conf = config;
+      // setConf in helper modules:
+      getDefaults.setConf(conf);
+      transformer.setConf(conf);
+    });
 }
