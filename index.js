@@ -25,7 +25,7 @@ function processFile(filePath) {
     .then(middleware)
     .then(getDefaults)
     .then(data => {
-    // If _layout, render it:
+      // If _layout, render it:
       if (data._layout) return render(data);
       // Else, return _body:
       else return data._body;
