@@ -5,6 +5,7 @@ const globby = require('globby');
 const grayMatter = require('gray-matter');
 const transformer = require('./lib/transformer');
 const marked = require('universalify').fromCallback(require('marked'));
+const cloneDeep = require('lodash').cloneDeep;
 // Local Modules:
 const getDefaults = require('./lib/getDefaults.js');
 
@@ -47,7 +48,9 @@ function loadFile(name) {
   return fs.readFile(path.join(conf.src, name), 'utf8')
     .then(grayMatter)
     .then(file => {
-      var data = file.data;
+      // Need to perform a full clone of this object since gray-matter does some
+      // agressive caching, and our mutation can mess up the cache
+      var data = cloneDeep(file.data);
       data._body = file.content;
       data._path = path.removeExt(name);
       data._ext = path.extname(name);

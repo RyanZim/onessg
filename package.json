@@ -30,7 +30,7 @@
   "dependencies": {
     "fs-extra": "^3.0.0",
     "globby": "^6.0.0",
-    "gray-matter": "^2.0.2",
+    "gray-matter": "^3.0.1",
     "inputformat-to-jstransformer": "^1.2.1",
     "js-yaml": "^3.6.1",
     "jstransformer": "^1.0.0",
