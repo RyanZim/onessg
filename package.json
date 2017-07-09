@@ -45,7 +45,7 @@
     "autoresolve": "0.0.3",
     "coveralls": "^2.11.14",
     "doctoc": "^1.2.0",
-    "eslint": "~4.1.0",
+    "eslint": "~4.2.0",
     "eslint-config-ryanzim": "0.0.2",
     "jstransformer-ejs": "0.0.3",
     "mocha": "^3.0.2",
