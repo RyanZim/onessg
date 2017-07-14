@@ -28,7 +28,7 @@
   "homepage": "https://github.com/RyanZim/onessg/",
   "bugs": "https://github.com/RyanZim/onessg/issues",
   "dependencies": {
-    "fs-extra": "^3.0.0",
+    "fs-extra": "^4.0.0",
     "globby": "^6.0.0",
     "gray-matter": "^3.0.1",
     "inputformat-to-jstransformer": "^1.2.1",
