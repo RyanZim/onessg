@@ -158,12 +158,12 @@ onessg
 onessg [-s <source_dir>] [-d <output_dir>] [-l <layout_dir>]
 
 Options:
-  -s, --src      Set the src directory                [string] [default: "src/"]
-  -d, --dist     Set the dist directory              [string] [default: "dist/"]
-  -l, --layouts  Set the layouts directory        [string] [default: "layouts/"]
-  -c, --config   Set the directory that contains onessg.config.js       [string]
-  --help         Show help                                             [boolean]
-  --version      Show version number                                   [boolean]
+--help         Show help                                             [boolean]
+--version      Show version number                                   [boolean]
+-s, --src      Set the src directory                [string] [default: "src/"]
+-d, --dist     Set the dist directory              [string] [default: "dist/"]
+-l, --layouts  Set the layouts directory        [string] [default: "layouts/"]
+-c, --config   Set the directory that contains onessg.config.js       [string]
 
 Examples:
   onessg

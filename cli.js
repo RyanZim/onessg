@@ -24,8 +24,6 @@ $0 [-s <source_dir>] [-d <output_dir>] [-l <layout_dir>] [-c <config_dir>]`)
     l: 'Set the layouts directory',
     c: 'Set the directory that contains onessg.config.js',
   })
-  .help()
-  .version()
   .example(
     `$0
 $0 -s posts/ -d output/ -l templates/`
