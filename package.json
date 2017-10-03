@@ -48,7 +48,7 @@
     "eslint": "~4.8.0",
     "eslint-config-ryanzim": "0.0.2",
     "jstransformer-ejs": "0.0.3",
-    "mocha": "^3.0.2",
+    "mocha": "^4.0.0",
     "nyc": "^11.0.2",
     "suppose": "^0.6.1"
   }
