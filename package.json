@@ -38,7 +38,7 @@
     "marked": "^0.3.6",
     "path-extra": "^4.0.0",
     "universalify": "^0.1.0",
-    "yargs": "^9.0.1"
+    "yargs": "^10.0.3"
   },
   "devDependencies": {
     "assert-dir-equal": "^1.0.1",
