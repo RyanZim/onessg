@@ -14,7 +14,7 @@ var conf;
 
 module.exports = function (config) {
   return setConf(config)
-    .then(() => globby('**/*.@(html|md|markdown)', {nodir: true, cwd: conf.src}))
+    .then(() => globby('**/*.@(html|md|markdown)', {cwd: conf.src}))
     .then(arr => Promise.all(arr.map(processFile)));
 };
 
