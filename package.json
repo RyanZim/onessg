@@ -47,7 +47,7 @@
     "doctoc": "^1.2.0",
     "eslint": "~4.16.0",
     "eslint-config-ryanzim": "0.0.2",
-    "jstransformer-ejs": "0.0.3",
+    "jstransformer-ejs": "0.2.0",
     "mocha": "^5.0.0",
     "nyc": "^11.0.2",
     "suppose": "^0.6.1"
