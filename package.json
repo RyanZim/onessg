@@ -29,7 +29,7 @@
   "bugs": "https://github.com/RyanZim/onessg/issues",
   "dependencies": {
     "fs-extra": "^5.0.0",
-    "globby": "^7.0.0",
+    "globby": "^8.0.0",
     "gray-matter": "^3.0.1",
     "inputformat-to-jstransformer": "^1.2.1",
     "js-yaml": "^3.6.1",
