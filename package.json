@@ -35,7 +35,7 @@
     "js-yaml": "^3.6.1",
     "jstransformer": "^1.0.0",
     "lodash": "^4.14.0",
-    "marked": "^0.3.6",
+    "marked": "^0.6.2",
     "path-extra": "^4.0.0",
     "universalify": "^0.1.0",
     "yargs": "^11.0.0"
